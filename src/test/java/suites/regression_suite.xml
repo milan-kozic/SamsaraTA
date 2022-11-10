@@ -1,0 +1,16 @@
+<!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
+<suite  name="Regression Suite" parallel="methods" thread-count="4">
+    <test name="Regression Tests">
+        <groups>
+            <run>
+                <include name = "regression"/>
+                <exclude name = "broken"/>
+                <exclude name = "deprecated"/>
+                <exclude name = "bugs"/>
+            </run>
+        </groups>
+    </test>
+    <packages>
+        <package name="tests.*"/>
+    </packages>
+</suite>

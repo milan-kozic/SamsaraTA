@@ -1,0 +1,16 @@
+<!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
+<suite  name="Sanity Suite" parallel="methods" thread-count="4">
+    <test name="Sanity Tests">
+        <groups>
+            <run>
+                <include name = "sanity"/>
+                <exclude name = "broken"/>
+                <exclude name = "deprecated"/>
+                <exclude name = "bugs"/>
+            </run>
+        </groups>
+    </test>
+    <packages>
+        <package name="tests.*"/>
+    </packages>
+</suite>

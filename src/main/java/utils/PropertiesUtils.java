@@ -58,12 +58,28 @@ public class PropertiesUtils extends LoggerUtils {
         return Boolean.parseBoolean(sHeadless);
     }
 
+    public static String getLocale() {
+        return getProperty("locale");
+    }
+
+    public static boolean getTakeScreenshot() {
+        String sTakeScreenshot = getProperty("takeScreenshot").toLowerCase();
+        if (!(sTakeScreenshot.equals("true") || sTakeScreenshot.equals("false"))) {
+            Assert.fail("Cannot convert 'TakeScreenshot' property value '" + sTakeScreenshot + "' to boolean value!");
+        }
+        return Boolean.parseBoolean(sTakeScreenshot);
+    }
+
     public static String getHubUrl() {
         return getProperty("hubUrl");
     }
 
     public static String getDriversFolder() {
         return getProperty("driversFolder");
+    }
+
+    public static String getScreenshotsFolder() {
+        return getProperty("screenshotsFolder");
     }
 
     public static String getLocalBaseUrl() {

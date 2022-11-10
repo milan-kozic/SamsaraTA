@@ -19,6 +19,7 @@ public class LoginPage extends CommonLoggedOutPage {
     private final By loginButtonLocator = By.xpath(loginBoxLocatorString + "//input[contains(@class,'btn-primary')]");
     // private final By loginButtonLocator = By.cssSelector("div#loginbox input.btn-primary");
     private final By successMessageLocator = By.xpath(loginBoxLocatorString + "//div[contains(@class, 'alert-success')]");
+    private final By errorMessageLocator = By.xpath(loginBoxLocatorString + "//div[contains(@class, 'alert-danger')]");
 
 
     // Bad Practice
@@ -55,11 +56,12 @@ public class LoginPage extends CommonLoggedOutPage {
         return isWebElementDisplayed(usernameTextFieldLocator);
     }
 
-    public void typeUsername(String sUsername) {
+    public LoginPage typeUsername(String sUsername) {
         log.debug("typeUsername(" + sUsername + ")");
         Assert.assertTrue(isUsernameTextFieldDisplayed(), "Username Text Field is NOT present on Login Page!");
         WebElement usernameTextField = getWebElement(usernameTextFieldLocator);
         clearAndTypeTextToWebElement(usernameTextField, sUsername);
+        return this;
     }
 
     public String getUsername() {
@@ -74,11 +76,12 @@ public class LoginPage extends CommonLoggedOutPage {
         return isWebElementDisplayed(passwordTextFieldLocator);
     }
 
-    public void typePassword(String sPassword) {
+    public LoginPage typePassword(String sPassword) {
         log.debug("typePassword(" + sPassword + ")");
         Assert.assertTrue(isPasswordTextFieldDisplayed(), "Password Text Field is NOT present on Login Page!");
         WebElement passwordTextField = getWebElement(passwordTextFieldLocator);
         clearAndTypeTextToWebElement(passwordTextField, sPassword);
+        return this;
     }
 
     public String getPassword() {
@@ -100,13 +103,24 @@ public class LoginPage extends CommonLoggedOutPage {
         return isWebElementEnabled(loginButton);
     }
 
-    public WelcomePage clickLoginButton() {
-        log.debug("clickLoginButton()");
-        Assert.assertTrue(isLoginButtonEnabled(), "Login Button is NOT enabled on Login Page!");
+    private void clickLoginButtonNoVerification() {
+        Assert.assertTrue(isLoginButtonEnabled(), "Login Button is NOT displayed on Login Page!");
         WebElement loginButton = getWebElement(loginButtonLocator);
         clickOnWebElement(loginButton);
+    }
+
+    public WelcomePage clickLoginButton() {
+        log.debug("clickLoginButton()");
+        clickLoginButtonNoVerification();
         WelcomePage welcomePage = new WelcomePage(driver);
         return welcomePage.verifyWelcomePage();
+    }
+
+    public LoginPage clickLoginButtonNoProgress() {
+        log.debug("clickLoginButtonNoProgress()");
+        clickLoginButtonNoVerification();
+        LoginPage loginPage = new LoginPage(driver);
+        return loginPage.verifyLoginPage();
     }
 
     public boolean isSuccessMessageDisplayed() {
@@ -116,9 +130,21 @@ public class LoginPage extends CommonLoggedOutPage {
 
     public String getSuccessMessage() {
         log.debug("getSuccessMessage()");
-        Assert.assertTrue(isSuccessMessageDisplayed(), "Success Message is NOT enabled on Login Page!");
+        Assert.assertTrue(isSuccessMessageDisplayed(), "Success Message is NOT displayed on Login Page!");
         WebElement successMessage = getWebElement(successMessageLocator);
         return getTextFromWebElement(successMessage);
+    }
+
+    public boolean isErrorMessageDisplayed() {
+        log.debug("isErrorMessageDisplayed()");
+        return isWebElementDisplayed(errorMessageLocator);
+    }
+
+    public String getErrorMessage() {
+        log.debug("getErrorMessage()");
+        Assert.assertTrue(isErrorMessageDisplayed(), "Error Message is NOT displayed on Login Page!");
+        WebElement errorMessage = getWebElement(errorMessageLocator);
+        return getTextFromWebElement(errorMessage);
     }
 
 }

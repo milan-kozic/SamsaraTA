@@ -139,6 +139,16 @@ public abstract class BasePageClass extends LoggerUtils {
         return element.isEnabled();
     }
 
+    protected boolean isWebElementEnabled(WebElement element, int timeout) {
+        log.trace("isWebElementEnabled(" + element + ", " + timeout + ")");
+        try {
+            waitForWebElementToBeClickable(element, timeout);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     protected boolean waitForUrlChange(String url, int timeout) {
         log.trace("waitForUrlChange(" + url + ", " + timeout + ")");
         WebDriverWait wait = getWebDriverWait(timeout);

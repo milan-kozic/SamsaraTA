@@ -59,6 +59,49 @@ public abstract class BasePageClass extends LoggerUtils {
         return wait.until(ExpectedConditions.elementToBeClickable(element));
     }
 
+    protected WebElement waitForWebElementTobeVisible(By locator, int timeout) {
+        log.trace("waitForWebElementTobeVisible(" + locator + ", " + timeout + ")");
+        WebDriverWait wait = getWebDriverWait(timeout);
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+    }
+
+    protected WebElement waitForWebElementTobeVisible(WebElement element, int timeout) {
+        log.trace("waitForWebElementTobeVisible(" + element + ", " + timeout + ")");
+        WebDriverWait wait = getWebDriverWait(timeout);
+        return wait.until(ExpectedConditions.visibilityOf(element));
+    }
+
+    protected boolean waitForWebElementToBeInvisible(By locator, int timeout) {
+        log.trace("waitForWebElementTobeVisible(" + locator + ", " + timeout + ")");
+        WebDriverWait wait = getWebDriverWait(timeout);
+        return wait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
+    }
+
+    protected boolean waitForWebElementToBeInvisible(WebElement element, int timeout) {
+        log.trace("waitForWebElementTobeVisible(" + element + ", " + timeout + ")");
+        WebDriverWait wait = getWebDriverWait(timeout);
+        return wait.until(ExpectedConditions.invisibilityOf(element));
+    }
+
+    protected boolean isWebElementVisible(By locator, int timeout) {
+        log.trace("isWebElementVisible(" + locator + ", " + timeout + ")");
+        try {
+            WebElement element = waitForWebElementTobeVisible(locator, timeout);
+            return element != null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    protected boolean isWebElementInvisible(By locator, int timeout) {
+        log.trace("isWebElementInvisible(" + locator + ", " + timeout + ")");
+        try {
+            return waitForWebElementToBeInvisible(locator, timeout);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     protected void typeTextToWebElement(WebElement element, String text) {
         log.trace("typeTextToWebElement(" + element + ", " + text + ")");
         element.sendKeys(text);

@@ -5,7 +5,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-public abstract class CommonLoggedOutPage extends BasePageClass {
+public abstract class CommonLoggedOutPage extends CommonPage {
 
     // Locators
     private final String headerLocatorString = "header#headContainer";

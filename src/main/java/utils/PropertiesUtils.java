@@ -125,5 +125,12 @@ public class PropertiesUtils extends LoggerUtils {
         return getProperty("adminPassword");
     }
 
+    public static String getEndUserUsername() {
+        return getProperty("endUserUsername");
+    }
+
+    public static String getEndUserPassword() {
+        return getProperty("endUserPassword");
+    }
 
 }

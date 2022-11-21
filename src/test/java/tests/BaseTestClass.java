@@ -32,12 +32,34 @@ public class BaseTestClass extends LoggerUtils {
 
     // For "One Test Class -> One Test Method" approach
     protected void tearDown(WebDriver driver, ITestResult result) {
-        String sTestName = result.getName();
-        if (PropertiesUtils.getTakeScreenshot()) {
-            if (result.getStatus() == ITestResult.FAILURE) {
+        tearDown(driver, result, 0);
+    }
+
+    protected void tearDown(WebDriver driver, ITestResult result, int session) {
+        String sTestName = result.getTestClass().getName();
+        session = Math.abs(session);
+        if (session > 0) {
+            sTestName = sTestName + "_" + session;
+        }
+        try {
+            ifFailed(driver, result, session);
+        } catch (AssertionError | Exception e) {
+            log.error("Exception occurred in tearDown(" + sTestName + ")! Message: " + e.getMessage());
+        } finally {
+            quitDriver(driver);
+        }
+    }
+
+    private void ifFailed(WebDriver driver, ITestResult result, int session) {
+        String sTestName = result.getTestClass().getName();
+        session = Math.abs(session);
+        if (session > 0) {
+            sTestName = sTestName + "_" + session;
+        }
+        if (result.getStatus() == ITestResult.FAILURE) {
+            if (PropertiesUtils.getTakeScreenshot()) {
                 ScreenShotUtils.takeScreenShot(driver, sTestName);
             }
         }
-        quitDriver(driver);
     }
 }

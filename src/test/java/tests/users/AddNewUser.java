@@ -1,4 +1,4 @@
-package tests.login;
+package tests.users;
 
 import data.CommonStrings;
 import data.Groups;
@@ -10,16 +10,19 @@ import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import pages.AddUserDialogBox;
 import pages.LoginPage;
+import pages.UsersPage;
 import pages.WelcomePage;
 import tests.BaseTestClass;
 import utils.DateTimeUtils;
 import utils.PropertiesUtils;
 
-@Test(groups = {Groups.REGRESSION, Groups.SANITY, Groups.LOGIN})
-public class SuccessfulLoginLogout extends BaseTestClass {
+@Test(groups = {Groups.REGRESSION, Groups.SANITY, Groups.USERS})
+public class AddNewUser extends BaseTestClass {
 
     private final String sTestName = this.getClass().getName();
+
     private WebDriver driver;
 
     private String sUsername;
@@ -36,30 +39,27 @@ public class SuccessfulLoginLogout extends BaseTestClass {
     }
 
     @Test
-    public void testSuccessfulLoginLogout() {
+    public void testAddNewUser() {
 
         log.debug("[START TEST] " + sTestName);
-
-        String sExpectedLogoutSuccessMessage = CommonStrings.getLogoutSuccessMessage();
 
         LoginPage loginPage = new LoginPage(driver).open();
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
-        loginPage.typeUsername(sUsername);
+        WelcomePage welcomePage = loginPage.login(sUsername, sPassword);
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
-        loginPage.typePassword(sPassword);
+        UsersPage usersPage = welcomePage.clickUsersTab();
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
-        WelcomePage welcomePage = loginPage.clickLoginButton();
+        AddUserDialogBox addUserDialogBox = usersPage.clickAddNewUserButton();
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
-        loginPage = welcomePage.clickLogoutLink();
+        usersPage = addUserDialogBox.clickCancelButton();
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
-        String sActualLogoutSuccessMessage = loginPage.getSuccessMessage();
-        Assert.assertEquals(sActualLogoutSuccessMessage, sExpectedLogoutSuccessMessage, "Wrong Logout Success Message!");
-
+        usersPage.clickLogoutLink();
+        DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
     }
 
     @AfterMethod(alwaysRun = true)
@@ -67,4 +67,5 @@ public class SuccessfulLoginLogout extends BaseTestClass {
         log.debug("[END TEST] " + sTestName);
         tearDown(driver, testResult);
     }
+
 }

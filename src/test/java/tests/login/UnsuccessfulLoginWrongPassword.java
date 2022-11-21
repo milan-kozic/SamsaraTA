@@ -21,19 +21,25 @@ public class UnsuccessfulLoginWrongPassword extends BaseTestClass {
     private final String sTestName = this.getClass().getName();
     private WebDriver driver;
 
+    private String sUsername;
+    private String sPassword;
+
     @BeforeMethod
     public void setUpTest(ITestContext testContext) {
         log.debug("[SETUP TEST] " + sTestName);
+
         driver = setUpDriver();
+
+        sUsername = PropertiesUtils.getAdminUsername();
+        sPassword = PropertiesUtils.getAdminPassword() + "!";
     }
 
     @Test
     public void testUnsuccessfulLoginWrongPassword() {
-        String sUsername = PropertiesUtils.getAdminUsername();
-        String sPassword = PropertiesUtils.getAdminPassword() + "!";
-        String sExpectedLoginErrorMessage = CommonStrings.getLoginErrorMessage();
 
         log.debug("[START TEST] " + sTestName);
+
+        String sExpectedLoginErrorMessage = CommonStrings.getLoginErrorMessage();
 
         LoginPage loginPage = new LoginPage(driver).open();
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);

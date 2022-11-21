@@ -4,8 +4,6 @@ import data.CommonStrings;
 import data.Time;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
-import org.testng.ITestResult;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 import pages.LoginPage;
 import pages.WelcomePage;
@@ -47,7 +45,8 @@ public class LoginTestExample extends BaseTestClass {
             Assert.assertEquals(sActualLogoutSuccessMessage, sExpectedLogoutSuccessMessage, "Wrong Logout Success Message!");
             bSuccess = true;
 
-        } finally {
+        }
+        finally {
             tearDown(driver, bSuccess);
         }
     }

@@ -6,7 +6,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
-public abstract class CommonLoggedInPage extends BasePageClass {
+public abstract class CommonLoggedInPage extends CommonPage {
 
     // Locators
     private final String headerLocatorString = "//header[@id='headContainer']";

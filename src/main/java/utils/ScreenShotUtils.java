@@ -22,6 +22,8 @@ public class ScreenShotUtils extends LoggerUtils {
             log.warn("Screenshot for test '" + sTestName + "' could not be taken! Driver instance has quit!");
             return null;
         }
+        //String sessionID = WebDriverUtils.getSessionID(driver).toString();
+        //String sScreenShotName = sTestName + "_" + sessionID;
         String pathToFile = createScreenShotPath(sTestName);
         TakesScreenshot screenshot = ((TakesScreenshot) driver);
         File srcFile = screenshot.getScreenshotAs(OutputType.FILE);

@@ -97,7 +97,7 @@ public class WebDriverUtils extends LoggerUtils {
         return driver;
     }
 
-    private static SessionId getSessionID(WebDriver driver) {
+    public static SessionId getSessionID(WebDriver driver) {
         return ((RemoteWebDriver) driver).getSessionId();
     }
 

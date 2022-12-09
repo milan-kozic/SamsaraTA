@@ -5,7 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
-public class CommonPage extends BasePageClass {
+public abstract class CommonPage extends BasePageClass {
 
     // Locators
     private final By pageTitleLocator = By.xpath("//div[contains(@class, 'panel-title')]");

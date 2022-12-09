@@ -1,2 +1,3 @@
 LOGOUT_SUCCESS_MESSAGE=Uspešno si se izlogov'o!
 LOGIN_ERROR_MESSAGE=Zezn'o si se! Pogrešno korisničko ime ili šifra!
+REGISTER_SUCCESS_MESSAGE=Registrov'o si se!

@@ -26,4 +26,8 @@ public final class CommonStrings {
     public static String getLoginErrorMessage() {
         return getLocaleString("LOGIN_ERROR_MESSAGE");
     }
+    public static String getRegisterSuccessMessage() {
+        return getLocaleString("REGISTER_SUCCESS_MESSAGE");
+    }
+
 }

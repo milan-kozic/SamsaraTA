@@ -1,16 +1,15 @@
 package tests.users;
 
-import data.CommonStrings;
 import data.Groups;
 import data.Time;
+import objects.User;
 import org.openqa.selenium.WebDriver;
-import org.testng.Assert;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import pages.AddUserDialogBox;
+import pages.AdminPage;
 import pages.LoginPage;
 import pages.UsersPage;
 import pages.WelcomePage;
@@ -28,6 +27,8 @@ public class AddNewUser extends BaseTestClass {
     private String sUsername;
     private String sPassword;
 
+    private User user;
+
     @BeforeMethod
     public void setUpTest(ITestContext testContext) {
         log.debug("[SETUP TEST] " + sTestName);
@@ -36,6 +37,7 @@ public class AddNewUser extends BaseTestClass {
 
         sUsername = PropertiesUtils.getAdminUsername();
         sPassword = PropertiesUtils.getAdminPassword();
+
     }
 
     @Test
@@ -52,14 +54,6 @@ public class AddNewUser extends BaseTestClass {
         UsersPage usersPage = welcomePage.clickUsersTab();
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
-        AddUserDialogBox addUserDialogBox = usersPage.clickAddNewUserButton();
-        DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
-
-        usersPage = addUserDialogBox.clickCancelButton();
-        DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
-
-        usersPage.clickLogoutLink();
-        DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
     }
 
     @AfterMethod(alwaysRun = true)

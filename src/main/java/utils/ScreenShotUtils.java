@@ -13,7 +13,7 @@ public class ScreenShotUtils extends LoggerUtils {
     private static final String sScreenShotFolder = System.getProperty("user.dir") + PropertiesUtils.getScreenshotsFolder();
 
     private static String createScreenShotPath(String sTestName) {
-        return sScreenShotFolder + sTestName + ".png";
+        return sScreenShotFolder + sTestName + "_" + DateTimeUtils.getDateTimeStamp() + ".png";
     }
 
     public static String takeScreenShot(WebDriver driver, String sTestName) {
@@ -22,8 +22,8 @@ public class ScreenShotUtils extends LoggerUtils {
             log.warn("Screenshot for test '" + sTestName + "' could not be taken! Driver instance has quit!");
             return null;
         }
-        //String sessionID = WebDriverUtils.getSessionID(driver).toString();
-        //String sScreenShotName = sTestName + "_" + sessionID;
+        // String sessionID = WebDriverUtils.getSessionID(driver).toString();
+        // String sScreenShotName = sTestName + "_" + sessionID;
         String pathToFile = createScreenShotPath(sTestName);
         TakesScreenshot screenshot = ((TakesScreenshot) driver);
         File srcFile = screenshot.getScreenshotAs(OutputType.FILE);

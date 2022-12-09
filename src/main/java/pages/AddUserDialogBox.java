@@ -4,6 +4,7 @@ import data.Time;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 import org.testng.Assert;
 
 public class AddUserDialogBox extends BasePageClass {
@@ -12,6 +13,10 @@ public class AddUserDialogBox extends BasePageClass {
     private final String addUserDialogBoxLocatorString = "//div[@id='addUserModal']";
     private final By addUserDialogBoxLocator = By.id("addUserModal");
     private final By cancelButtonLocator = By.xpath(addUserDialogBoxLocatorString + "//button[contains(@class,'btn-default')]");
+
+    // Page Factory Locator
+    @FindBy(id = "username")
+    private WebElement usernameTextField;
 
     // Constructor
     public AddUserDialogBox(WebDriver driver) {
@@ -33,6 +38,25 @@ public class AddUserDialogBox extends BasePageClass {
         return isWebElementInvisible(addUserDialogBoxLocator, timeout);
     }
 
+    public boolean isUsernameTextFieldDisplayed() {
+        log.debug("isUsernameTextFieldDisplayed()");
+        return isWebElementDisplayed(usernameTextField);
+    }
+
+    public AddUserDialogBox typeUsername(String sUsername) {
+        log.debug("typeUsername(" + sUsername + ")");
+        Assert.assertTrue(isUsernameTextFieldDisplayed(), "Username Text Field is NOT present on 'Add User' DialogBox!");
+        clearAndTypeTextToWebElement(usernameTextField, sUsername);
+        return this;
+    }
+
+    public String getUsername() {
+        log.debug("getUsername()");
+        Assert.assertTrue(isUsernameTextFieldDisplayed(), "Username Text Field is NOT present on 'Add User' DialogBox!");
+        return getValueFromWebElement(usernameTextField);
+    }
+
+
     public boolean isCancelButtonDisplayed() {
         log.debug("isCancelButtonDisplayed()");
         return isWebElementDisplayed(cancelButtonLocator);
@@ -47,6 +71,5 @@ public class AddUserDialogBox extends BasePageClass {
         UsersPage usersPage = new UsersPage(driver);
         return usersPage.verifyUsersPage();
     }
-
 
 }

@@ -23,7 +23,7 @@ public class LoginPage extends CommonLoggedOutPage {
     private final By resetPasswordLinkLocator = By.xpath(loginBoxLocatorString + "//a[@href='" + PageUrlPaths.RESET_PASSWORD_PAGE + "']");
 
     // Bad Practice
-    // WebElement usernameTextField = driver.findElement(usernameTextFieldLocator);
+    //WebElement usernameTextField = driver.findElement(usernameTextFieldLocator);
 
     // Constructor
     public LoginPage(WebDriver driver) {

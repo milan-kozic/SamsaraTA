@@ -97,6 +97,10 @@ public class WebDriverUtils extends LoggerUtils {
         return driver;
     }
 
+    public static void setImplicitWait(WebDriver driver, int timeout) {
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(timeout));
+    }
+
     public static SessionId getSessionID(WebDriver driver) {
         return ((RemoteWebDriver) driver).getSessionId();
     }

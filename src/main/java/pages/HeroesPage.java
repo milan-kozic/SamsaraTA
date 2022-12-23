@@ -108,6 +108,37 @@ public class HeroesPage extends CommonLoggedInPage {
         return getTextFromWebElement(addNewHeroButton);
     }
 
+    public boolean isSearchTextBoxDisplayed() {
+        log.debug("isSearchTextBoxDisplayed()");
+        return isWebElementDisplayed(searchTextBox);
+    }
+
+    public HeroesPage typeSearchText(String text) {
+        log.debug("typeSearchText(" + text + ")");
+        Assert.assertTrue(isSearchTextBoxDisplayed(), "'Search' Text Box is NOT displayed on Heroes Page");
+        clearAndTypeTextToWebElement(searchTextBox, text);
+        return this;
+    }
+
+    public String getSearchText() {
+        log.debug("getSearchText()");
+        Assert.assertTrue(isSearchTextBoxDisplayed(), "'Search' Text Box is NOT displayed on Heroes Page");
+        return getValueFromWebElement(searchTextBox);
+    }
+
+    public boolean isSearchButtonDisplayed() {
+        log.debug("isSearchButtonDisplayed()");
+        return isWebElementDisplayed(searchButton);
+    }
+
+    public HeroesPage clickSearchButton() {
+        log.debug("clickSearchButton()");
+        Assert.assertTrue(isSearchButtonDisplayed(), "'Search' Button is NOT displayed on Heroes Page");
+        clickOnWebElement(searchButton);
+        HeroesPage heroesPage = new HeroesPage(driver);
+        return heroesPage.verifyHeroesPage();
+    }
+
     public boolean isHeroPresentInHeroesTable(String sHeroName) {
         log.debug("isHeroPresentInHeroesTable(" + sHeroName + ")");
         String xPath = createXpathForHeroNameInHeroesTable(sHeroName);
@@ -199,6 +230,12 @@ public class HeroesPage extends CommonLoggedInPage {
         clickOnWebElement(deleteHeroIcon);
         DeleteHeroDialogBox deleteHeroDialogBox = new DeleteHeroDialogBox(driver);
         return deleteHeroDialogBox.verifyDeleteHeroDialogBox();
+    }
+
+    public HeroesPage search(String sSearchText) {
+        log.info("search(" + sSearchText + ")");
+        typeSearchText(sSearchText);
+        return clickSearchButton();
     }
 
 

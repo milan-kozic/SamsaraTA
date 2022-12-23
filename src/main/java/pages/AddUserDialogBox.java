@@ -12,11 +12,8 @@ public class AddUserDialogBox extends BasePageClass {
     // Locators
     private final String addUserDialogBoxLocatorString = "//div[@id='addUserModal']";
     private final By addUserDialogBoxLocator = By.id("addUserModal");
+    private final By addUserDialogBoxTitleLocator = By.xpath(addUserDialogBoxLocatorString + "//h4[contains(@class,'modal-title')]");
     private final By cancelButtonLocator = By.xpath(addUserDialogBoxLocatorString + "//button[contains(@class,'btn-default')]");
-
-    // Page Factory Locator
-    @FindBy(id = "username")
-    private WebElement usernameTextField;
 
     // Constructor
     public AddUserDialogBox(WebDriver driver) {
@@ -38,24 +35,17 @@ public class AddUserDialogBox extends BasePageClass {
         return isWebElementInvisible(addUserDialogBoxLocator, timeout);
     }
 
-    public boolean isUsernameTextFieldDisplayed() {
-        log.debug("isUsernameTextFieldDisplayed()");
-        return isWebElementDisplayed(usernameTextField);
+    public boolean isDialogBoxTitleDisplayed() {
+        log.debug("isDialogBoxTitleDisplayed()");
+        return isWebElementDisplayed(addUserDialogBoxTitleLocator);
     }
 
-    public AddUserDialogBox typeUsername(String sUsername) {
-        log.debug("typeUsername(" + sUsername + ")");
-        Assert.assertTrue(isUsernameTextFieldDisplayed(), "Username Text Field is NOT present on 'Add User' DialogBox!");
-        clearAndTypeTextToWebElement(usernameTextField, sUsername);
-        return this;
+    public String getDialogBoxTitle() {
+        log.debug("getDialogBoxTitle()");
+        Assert.assertTrue(isDialogBoxTitleDisplayed(), "DialogBox Title is NOT displayed on 'Add Hero' DialogBox");
+        WebElement dialogBoxTitle = getWebElement(addUserDialogBoxTitleLocator);
+        return getTextFromWebElement(dialogBoxTitle);
     }
-
-    public String getUsername() {
-        log.debug("getUsername()");
-        Assert.assertTrue(isUsernameTextFieldDisplayed(), "Username Text Field is NOT present on 'Add User' DialogBox!");
-        return getValueFromWebElement(usernameTextField);
-    }
-
 
     public boolean isCancelButtonDisplayed() {
         log.debug("isCancelButtonDisplayed()");

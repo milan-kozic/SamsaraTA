@@ -57,9 +57,18 @@ public class BaseTestClass extends LoggerUtils {
             sTestName = sTestName + "_" + session;
         }
         if (result.getStatus() == ITestResult.FAILURE) {
-            if (PropertiesUtils.getTakeScreenshot()) {
+            if (PropertiesUtils.getTakeScreenshot() && !getListenerTakeScreenShot(result)) {
+                // log.info("Taking ScreenShot from BaseTestClass");
                 ScreenShotUtils.takeScreenShot(driver, sTestName);
             }
+        }
+    }
+
+    private boolean getListenerTakeScreenShot(ITestResult result) {
+        try {
+            return (boolean) result.getTestContext().getAttribute("listenerTakeScreenShot");
+        } catch (Exception e) {
+            return false;
         }
     }
 }

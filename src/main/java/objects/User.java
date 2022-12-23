@@ -194,6 +194,15 @@ public class User {
         }
     }
 
+    public Hero getHero(String sHeroName) {
+        for(Hero h : heroes) {
+            if(h.getHeroName().equals(sHeroName)) {
+                return h;
+            }
+        }
+        return null;
+    }
+
     public static User createNewUniqueUser(String sUsername) {
         String username = sUsername.toLowerCase() + DateTimeUtils.getDateTimeStamp();
         if (username.length() > 35) {

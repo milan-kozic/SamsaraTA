@@ -1,3 +1,4 @@
 LOGOUT_SUCCESS_MESSAGE=You have been logged out.
 LOGIN_ERROR_MESSAGE=Invalid username and password.
 REGISTER_SUCCESS_MESSAGE=You have successfully registered on Samsara.
+DELETE_HERO_MESSAGE=Do you really want to delete hero %HERO_NAME% (%HERO_CLASS%, %HERO_LEVEL%)?

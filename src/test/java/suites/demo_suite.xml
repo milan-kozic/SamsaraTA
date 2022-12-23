@@ -1,0 +1,21 @@
+<!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
+<suite  name="Demo Suite" parallel="methods" thread-count="4">
+
+    <listeners>
+        <listener class-name="listeners.TestListener"/>
+    </listeners>
+
+    <test name="Demo Tests">
+        <groups>
+            <run>
+                <include name = "demo"/>
+                <exclude name = "broken"/>
+                <exclude name = "deprecated"/>
+                <exclude name = "bugs"/>
+            </run>
+        </groups>
+    </test>
+    <packages>
+        <package name="tests.*"/>
+    </packages>
+</suite>

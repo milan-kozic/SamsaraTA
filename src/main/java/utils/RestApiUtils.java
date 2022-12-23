@@ -1,11 +1,11 @@
 package utils;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import data.ApiCalls;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import objects.Hero;
 import objects.User;
 import org.testng.Assert;
 import pages.BasePageClass;
@@ -25,7 +25,7 @@ public class RestApiUtils extends LoggerUtils {
                     .headers("Content-Type", ContentType.JSON, "Accept", ContentType.JSON)
                     .when().get(sApiCall);
         } catch (Exception e) {
-            Assert.fail("Exception in checkIfUserExistsApiCall(" + sUsername + ") Api Call: " + e.getMessage());
+            Assert.fail("Exception in checkIfUserExists(" + sUsername + ") Api Call: " + e.getMessage());
         }
         return response;
     }
@@ -54,7 +54,7 @@ public class RestApiUtils extends LoggerUtils {
                     .headers("Content-Type", ContentType.JSON, "Accept", ContentType.JSON)
                     .when().get(sApiCall);
         } catch (Exception e) {
-            Assert.fail("Exception in getUserApiCall(" + sUsername + ") Api Call: " + e.getMessage());
+            Assert.fail("Exception in getUser(" + sUsername + ") Api Call: " + e.getMessage());
         }
         return response;
     }
@@ -97,7 +97,7 @@ public class RestApiUtils extends LoggerUtils {
                     .when().redirects().follow(false)
                     .post(sApiCall);
         } catch (Exception e) {
-            Assert.fail("Exception in postUserApiCall(" + user.getUsername() + ") Api Call: " + e.getMessage());
+            Assert.fail("Exception in postUser(" + user.getUsername() + ") Api Call: " + e.getMessage());
         }
         return response;
     }
@@ -125,7 +125,7 @@ public class RestApiUtils extends LoggerUtils {
                     .when().redirects().follow(false)
                     .delete(sApiCall);
         } catch (Exception e) {
-            Assert.fail("Exception in deleteUserApiCall(" + sUsername + ") Api Call: " + e.getMessage());
+            Assert.fail("Exception in deleteUser(" + sUsername + ") Api Call: " + e.getMessage());
         }
         return response;
     }
@@ -142,6 +142,131 @@ public class RestApiUtils extends LoggerUtils {
 
     public static void deleteUser(String sUsername) {
         deleteUser(sUsername, ADMIN_USERNAME, ADMIN_PASSWORD);
+    }
+
+    private static Response checkIfHeroExistsApiCall(String sHeroName, String sAuthUser, String sAuthPass) {
+        String sApiCall = BASE_URL + ApiCalls.createCheckIfHeroExistsApiCall(sHeroName);
+        Response response = null;
+        try {
+            response = RestAssured.given().auth().basic(sAuthUser, sAuthPass)
+                    .headers("Content-Type", ContentType.JSON, "Accept", ContentType.JSON)
+                    .get(sApiCall);
+        } catch (Exception e) {
+            Assert.fail("Exception in checkIfHeroExists(" + sHeroName + ") Api Call: " + e.getMessage());
+        }
+        return response;
+    }
+
+    public static boolean checkIfHeroExists(String sHeroName, String sAuthUser, String sAuthPass) {
+        log.trace("checkIfHeroExists(" + sHeroName + ")");
+        Response response = checkIfHeroExistsApiCall(sHeroName, sAuthUser, sAuthPass);
+        int status = response.getStatusCode();
+        String sResponseBody = response.getBody().asString();
+        Assert.assertEquals(status, 200, "Wrong Response Status Code in checkIfHeroExists(" + sHeroName + ")! Response Body: " + sResponseBody);
+        if (!(sResponseBody.equalsIgnoreCase("true") || sResponseBody.equalsIgnoreCase("false"))) {
+            Assert.fail("Cannot convert response body '" + sResponseBody + "' to boolean value!");
+        }
+        return Boolean.parseBoolean(sResponseBody);
+    }
+
+    public static boolean checkIfHeroExists(String sHeroName) {
+        return checkIfHeroExists(sHeroName, ADMIN_USERNAME, ADMIN_PASSWORD);
+    }
+
+    private static Response getHeroApiCall(String sHeroName, String sAuthUser, String sAuthPass) {
+        String sApiCall = BASE_URL + ApiCalls.createGetHeroApiCall(sHeroName);
+        Response response = null;
+        try {
+            response = RestAssured.given().auth().basic(sAuthUser, sAuthPass)
+                    .headers("Content-Type", ContentType.JSON, "Accept", ContentType.JSON)
+                    .get(sApiCall);
+        } catch (Exception e) {
+            Assert.fail("Exception in getHero(" + sHeroName + ") Api Call: " + e.getMessage());
+        }
+        return response;
+    }
+
+    public static String getHeroJsonFormat(String sHeroName, String sAuthUser, String sAuthPass) {
+        Assert.assertTrue(checkIfHeroExists(sHeroName, sAuthUser, sAuthPass), "Hero '" + sHeroName + "' doesn't exist!");
+        Response response = getHeroApiCall(sHeroName, sAuthUser, sAuthPass);
+        int status = response.getStatusCode();
+        String sResponseBody = response.getBody().asString();
+        Assert.assertEquals(status, 200, "Wrong Response Status Code in getHero(" + sHeroName + ") Api Call! Response Body: " + sResponseBody);
+        return sResponseBody;
+    }
+
+    public static String getHeroJsonFormat(String sHeroName) {
+        return getHeroJsonFormat(sHeroName, ADMIN_USERNAME, ADMIN_PASSWORD);
+    }
+
+    public static Hero getHero(String sHeroName, String sAuthUser, String sAuthPass) {
+        log.debug("getHero(" + sHeroName + ")");
+        String json = getHeroJsonFormat(sHeroName, sAuthUser, sAuthPass);
+        Gson gson = new Gson();
+        return gson.fromJson(json, Hero.class);
+    }
+
+    public static Hero getHero(String sHeroName) {
+        return getHero(sHeroName, ADMIN_USERNAME, ADMIN_PASSWORD);
+    }
+
+    private static Response postHeroApiCall(Hero hero, String sAuthUser, String sAuthPass) {
+        String sApiCall = BASE_URL + ApiCalls.createPostHeroApiCall();
+        Response response = null;
+        try {
+            Gson gson = new Gson();
+            String json = gson.toJson(hero, Hero.class);
+            response = RestAssured.given().auth().basic(sAuthUser, sAuthPass)
+                    .headers("Content-Type", ContentType.JSON, "Accept", ContentType.JSON)
+                    .body(json)
+                    .when().redirects().follow(false)
+                    .post(sApiCall);
+        } catch (Exception e) {
+            Assert.fail("Exception in postHero(" + hero.getHeroName() + ") Api Call: " + e.getMessage());
+        }
+        return response;
+    }
+
+    public static void postHero(Hero hero, String sAuthUser, String sAuthPass) {
+        log.debug("postHero(" + hero.getHeroName() + ")");
+        Assert.assertFalse(checkIfHeroExists(hero.getHeroName(), sAuthUser, sAuthPass), "Hero '" + hero.getHeroName() + "' already exists!");
+        Response response = postHeroApiCall(hero, sAuthUser, sAuthPass);
+        int status = response.getStatusCode();
+        String sResponseBody = response.getBody().asString();
+        Assert.assertEquals(status, 200, "Wrong Response Status Code in postHero(" + hero.getHeroName() + ") Api Call! Response Body: " + sResponseBody);
+        log.debug("Hero Created: " + checkIfHeroExists(hero.getHeroName(), sAuthUser, sAuthPass));
+    }
+
+    public static void postHero(Hero hero) {
+        postHero(hero, ADMIN_USERNAME, ADMIN_PASSWORD);
+    }
+
+    private static Response deleteHeroApiCall(String sHeroName, String sAuthUser, String sAuthPass) {
+        String sApiCall = BASE_URL + ApiCalls.createDeleteHeroApiCall(sHeroName);
+        Response response = null;
+        try {
+            response = RestAssured.given().auth().basic(sAuthUser, sAuthPass)
+                    .headers("Content-Type", ContentType.JSON, "Accept", ContentType.JSON)
+                    .when().redirects().follow(false)
+                    .delete(sApiCall);
+        } catch (Exception e) {
+            Assert.fail("Exception in deleteHero(" + sHeroName + ") Api Call: " + e.getMessage());
+        }
+        return response;
+    }
+
+    public static void deleteHero(String sHeroName, String sAuthUser, String sAuthPass) {
+        log.debug("deleteHero(" + sHeroName + ")");
+        Assert.assertTrue(checkIfHeroExists(sHeroName,sAuthUser, sAuthPass), "Hero '" + sHeroName + "' doesn't exist!");
+        Response response = deleteHeroApiCall(sHeroName, sAuthUser, sAuthPass);
+        int status = response.getStatusCode();
+        String sResponseBody = response.getBody().asString();
+        Assert.assertEquals(status, 200, "Wrong Response Status Code in deleteHero(" + sHeroName + ") Api Call! Response Body: " + sResponseBody);
+        log.debug("Hero Deleted: " + !checkIfHeroExists(sHeroName, sAuthUser, sAuthPass));
+    }
+
+    public static void deleteHero(String sHeroName) {
+        deleteHero(sHeroName, ADMIN_USERNAME, ADMIN_PASSWORD);
     }
 
 }

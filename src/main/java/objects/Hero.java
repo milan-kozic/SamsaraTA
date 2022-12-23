@@ -1,12 +1,17 @@
 package objects;
 
+import com.github.javafaker.Faker;
 import com.google.gson.annotations.SerializedName;
+import data.HeroClass;
+import org.testng.Assert;
 import utils.DateTimeUtils;
 
 import java.util.Date;
 import java.util.Objects;
 
 public class Hero {
+
+    private static final String[] heroClasses = {HeroClass.WARRIOR, HeroClass.GUARDIAN, HeroClass.REVENANT, HeroClass.ENGINEER, HeroClass.THIEF, HeroClass.RANGER, HeroClass.ELEMENTALIST, HeroClass.NECROMANCER, HeroClass.MESMER};
 
     // @Expose
     @SerializedName("name")
@@ -99,7 +104,31 @@ public class Hero {
 
     public static Hero createNewUniqueHero(User user, String sHeroName, String sHeroClass, int iHeroLevel) {
         String heroName = sHeroName + DateTimeUtils.getDateTimeStamp();
+        if (heroName.length() > 25) {
+            Assert.fail("Hero Name '" + heroName + "' cannot be longer than 25 characters!");
+        }
         return new Hero(heroName, sHeroClass, iHeroLevel, user.getUsername());
+    }
+
+    public static Hero createNewUniqueHero(User user, String sHeroName) {
+        String heroName = sHeroName + DateTimeUtils.getDateTimeStamp();
+        if (heroName.length() > 25) {
+            Assert.fail("Hero Name '" + heroName + "' cannot be longer than 25 characters!");
+        }
+        String username = user.getUsername();
+        int heroLevel = createRandomHeroLevel();
+        String heroClass = createRandomHeroClass();
+        return new Hero(heroName, heroClass, heroLevel, username);
+    }
+
+    private static int createRandomHeroLevel() {
+        Faker faker = new Faker();
+        return faker.random().nextInt(0, 80);
+    }
+
+    private static String createRandomHeroClass() {
+        Faker faker = new Faker();
+        return heroClasses[faker.random().nextInt(0, 8)];
     }
 
     @Override

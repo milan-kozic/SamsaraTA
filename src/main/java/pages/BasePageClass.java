@@ -7,6 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import utils.LoggerUtils;
@@ -282,6 +283,33 @@ public abstract class BasePageClass extends LoggerUtils {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    protected String getFirstSelectedOptionOnWebElement(WebElement element) {
+        log.trace("getFirstSelectedOptionOnWebElement(" + element + ")");
+        Select select = new Select(element);
+        WebElement selectedOption = select.getFirstSelectedOption();
+        return getTextFromWebElement(selectedOption);
+    }
+
+    protected boolean isOptionPresentOnWebElement(WebElement element, String option) {
+        log.trace("isOptionPresentOnWebElement(" + element + ", " + option + ")");
+        Select select = new Select(element);
+        List<WebElement> options = select.getOptions();
+        boolean bPresent = false;
+        for(WebElement e : options) {
+            if(getValueFromWebElement(e).equals(option)) {
+                bPresent = true;
+                break;
+            }
+        }
+        return bPresent;
+    }
+
+    protected void selectOptionOnWebElement(WebElement element, String option) {
+        log.trace("selectOptionOnWebElement(" + element + ", " + option + ")");
+        Select select = new Select(element);
+        select.selectByValue(option);
     }
 
     protected boolean waitForUrlChange(String url, int timeout) {

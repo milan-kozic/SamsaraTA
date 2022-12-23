@@ -35,6 +35,7 @@ public class LoginTwoDrivers extends BaseTestClass {
 
         driver1 = setUpDriver();
         driver2 = setUpDriver();
+        testContext.setAttribute(sTestName + ".drivers", new WebDriver[]{driver1, driver2});
 
         sAdminUsername = PropertiesUtils.getAdminUsername();
         sAdminPassword = PropertiesUtils.getAdminPassword();

@@ -30,4 +30,8 @@ public final class CommonStrings {
         return getLocaleString("REGISTER_SUCCESS_MESSAGE");
     }
 
+    public static String getDeleteHeroMessage(String sHeroName, String sHeroClass, Integer iHeroLevel) {
+        return getLocaleString("DELETE_HERO_MESSAGE").replace("%HERO_NAME%", sHeroName).replace("%HERO_CLASS%", sHeroClass).replace("%HERO_LEVEL%", String.valueOf(iHeroLevel));
+    }
+
 }

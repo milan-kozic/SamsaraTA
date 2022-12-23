@@ -33,6 +33,8 @@ public class SuccessfulRegister extends BaseTestClass {
         log.debug("[SETUP TEST] " + sTestName);
 
         driver = setUpDriver();
+        testContext.setAttribute(sTestName + ".drivers", new WebDriver[]{driver});
+
         user = User.createNewUniqueUser("SuccessRegister");
     }
 

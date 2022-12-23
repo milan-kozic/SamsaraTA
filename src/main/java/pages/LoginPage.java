@@ -2,6 +2,7 @@ package pages;
 
 import data.PageUrlPaths;
 import data.Time;
+import objects.User;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -200,6 +201,15 @@ public class LoginPage extends CommonLoggedOutPage {
         typeUsername(sUsername);
         typePassword(sPassword);
         return clickLoginButton();
+    }
+
+    /**
+     * Login to Samsara
+     * @param user {User} User Details
+     * @return {WelcomePage}
+     */
+    public WelcomePage login(User user) {
+        return login(user.getUsername(), user.getPassword());
     }
 
 }

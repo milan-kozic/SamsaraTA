@@ -1,8 +1,9 @@
-package tests.login;
+package tests.heroes;
 
 import data.CommonStrings;
 import data.Groups;
 import data.Time;
+import objects.Hero;
 import objects.User;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
@@ -11,21 +12,22 @@ import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import pages.LoginPage;
-import pages.WelcomePage;
+import org.testng.asserts.SoftAssert;
+import pages.*;
 import tests.BaseTestClass;
 import utils.DateTimeUtils;
 import utils.RestApiUtils;
 
-@Test(groups = {Groups.REGRESSION, Groups.SANITY, Groups.DEMO, Groups.LOGIN, "JIRA00001E"}, testName = "JIRA00001C", description = "JIRA00001D")
-public class SuccessfulLoginLogout extends BaseTestClass {
+import java.util.Date;
+
+@Test(groups = {Groups.REGRESSION, Groups.SANITY, Groups.HEROES})
+public class DeleteHero extends BaseTestClass {
 
     private final String sTestName = this.getClass().getName();
     private WebDriver driver;
 
-    public final String sJiraID = "JIRA00001A";
-
     private User user;
+    private Hero hero;
     private boolean bCreated = false;
 
 
@@ -35,38 +37,51 @@ public class SuccessfulLoginLogout extends BaseTestClass {
 
         driver = setUpDriver();
         testContext.setAttribute(sTestName + ".drivers", new WebDriver[]{driver});
-        testContext.setAttribute(sTestName + ".jiraID", "JIRA00001B");
 
-        user = User.createNewUniqueUser("SuccessLoginLogout");
+        user = User.createNewUniqueUser("DeleteHero");
         RestApiUtils.postUser(user);
         bCreated = true;
         user.setCreatedAt(RestApiUtils.getUser(user.getUsername()).getCreatedAt());
+        log.info("User: " + user);
+
+        hero = Hero.createNewUniqueHero(user, "DeletedHero");
+        RestApiUtils.postHero(hero);
+        hero.setCreatedAt(RestApiUtils.getHero(hero.getHeroName()).getCreatedAt());
+        log.info("Hero: " + hero);
     }
 
     @Test
-    public void testSuccessfulLoginLogout() {
+    public void testAddNewHero() {
+
+        String sExpectedDeleteHeroMessage = CommonStrings.getDeleteHeroMessage(hero.getHeroName(), hero.getHeroClass(), hero.getHeroLevel());
+        log.info("Expected Delete Hero Message: " + sExpectedDeleteHeroMessage);
 
         log.debug("[START TEST] " + sTestName);
-
-        String sExpectedLogoutSuccessMessage = CommonStrings.getLogoutSuccessMessage();
 
         LoginPage loginPage = new LoginPage(driver).open();
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
-        loginPage.typeUsername(user.getUsername());
+        WelcomePage welcomePage = loginPage.login(user);
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
-        loginPage.typePassword(user.getPassword());
+        HeroesPage heroesPage = welcomePage.clickHeroesTab();
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
-        WelcomePage welcomePage = loginPage.clickLoginButton();
+        heroesPage = heroesPage.search(hero.getHeroName());
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
-        loginPage = welcomePage.clickLogoutLink();
+        DeleteHeroDialogBox deleteHeroDialogBox = heroesPage.clickDeleteHeroIconInHeroesTable(hero.getHeroName());
+        String sActualDeleteHeroMessage = deleteHeroDialogBox.getDeleteHeroMessage();
+        Assert.assertEquals(sActualDeleteHeroMessage, sExpectedDeleteHeroMessage, "Wrong Delete Hero Message!");
+
+        heroesPage = deleteHeroDialogBox.clickDeleteButton();
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
-        String sActualLogoutSuccessMessage = loginPage.getSuccessMessage();
-        Assert.assertEquals(sActualLogoutSuccessMessage, sExpectedLogoutSuccessMessage, "Wrong Logout Success Message!");
+        Assert.assertFalse(RestApiUtils.checkIfHeroExists(hero.getHeroName()), "Hero '" + hero.getHeroName() + "' is NOT deleted!");
+
+        User savedUser = RestApiUtils.getUser(user.getUsername());
+        int numberOfHeroes = savedUser.getHeroCount();
+        Assert.assertEquals(numberOfHeroes, 0, "User's Hero is NOT deleted!");
 
     }
 

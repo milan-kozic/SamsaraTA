@@ -29,6 +29,7 @@ public class UnsuccessfulLoginWrongPassword extends BaseTestClass {
         log.debug("[SETUP TEST] " + sTestName);
 
         driver = setUpDriver();
+        testContext.setAttribute(sTestName + ".drivers", new WebDriver[]{driver});
 
         sUsername = PropertiesUtils.getAdminUsername();
         sPassword = PropertiesUtils.getAdminPassword() + "!";
@@ -55,6 +56,7 @@ public class UnsuccessfulLoginWrongPassword extends BaseTestClass {
 
         String sActualLoginErrorMessage = loginPage.getErrorMessage();
         Assert.assertEquals(sActualLoginErrorMessage, sExpectedLoginErrorMessage, "Wrong Login Error Message!");
+
     }
 
     @AfterMethod(alwaysRun = true)

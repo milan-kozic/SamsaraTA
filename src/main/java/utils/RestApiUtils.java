@@ -5,6 +5,7 @@ import data.ApiCalls;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import objects.ApiError;
 import objects.Hero;
 import objects.User;
 import org.testng.Assert;
@@ -85,6 +86,24 @@ public class RestApiUtils extends LoggerUtils {
         return getUser(sUsername, ADMIN_USERNAME, ADMIN_PASSWORD);
     }
 
+    public static String getUserApiErrorJsonFormat(String sUsername, String sAuthUser, String sAuthPass) {
+        log.debug("getUserApiErrorJsonFormat(" + sUsername + ")");
+        Response response = getUserApiCall(sUsername, sAuthUser, sAuthPass);
+        return response.getBody().asString();
+    }
+
+    public static ApiError getUserApiError(String sUsername, String sAuthUser, String sAuthPass) {
+        log.debug("getUserApiError(" + sUsername + ")");
+        String json = getUserApiErrorJsonFormat(sUsername, sAuthUser, sAuthPass);
+        Gson gson = new Gson();
+        return gson.fromJson(json, ApiError.class);
+    }
+
+    public static ApiError getUserApiError(String sUsername) {
+        return getUserApiError(sUsername, ADMIN_USERNAME, ADMIN_PASSWORD);
+    }
+
+
     private static Response postUserApiCall(User user, String sAuthUser, String sAuthPass) {
         String sApiCall = BASE_URL + ApiCalls.createPostUserApiCall();
         Response response = null;
@@ -114,6 +133,23 @@ public class RestApiUtils extends LoggerUtils {
 
     public static void postUser(User user) {
         postUser(user, ADMIN_USERNAME, ADMIN_PASSWORD);
+    }
+
+    public static String postUserApiErrorJsonFormat(User user, String sAuthUser, String sAuthPass) {
+        log.debug("postUserApiErrorJsonFormat(" + user.getUsername() + ")");
+        Response response = postUserApiCall(user, sAuthUser, sAuthPass);
+        return response.getBody().asString();
+    }
+
+    public static ApiError postUserApiError(User user, String sAuthUser, String sAuthPass) {
+        log.debug("getUserApiError(" + user.getUsername() + ")");
+        String json = postUserApiErrorJsonFormat(user, sAuthUser, sAuthPass);
+        Gson gson = new Gson();
+        return gson.fromJson(json, ApiError.class);
+    }
+
+    public static ApiError postUserApiError(User user) {
+        return postUserApiError(user, ADMIN_USERNAME, ADMIN_PASSWORD);
     }
 
     private static Response deleteUserApiCall(String sUsername, String sAuthUser, String sAuthPass) {

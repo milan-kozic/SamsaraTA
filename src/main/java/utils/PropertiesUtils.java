@@ -125,6 +125,14 @@ public class PropertiesUtils extends LoggerUtils {
         return getProperty("adminPassword");
     }
 
+    public static String getRootUsername() {
+        return getProperty("rootUsername");
+    }
+
+    public static String getRootPassword() {
+        return getProperty("rootPassword");
+    }
+
     public static String getEndUserUsername() {
         return getProperty("endUserUsername");
     }
@@ -135,6 +143,41 @@ public class PropertiesUtils extends LoggerUtils {
 
     public static String getDefaultPassword() {
         return getProperty("defaultPassword");
+    }
+
+    public static String getLocalDataSourceUrl() {
+        return getProperty("localDataSourceUrl");
+    }
+
+    public static String getTestDataSourceUrl() {
+        return getProperty("testDataSourceUrl");
+    }
+
+    public static String getProdDataSourceUrl() {
+        return getProperty("prodDataSourceUrl");
+    }
+
+    public static String getDataSourceUrl() {
+        String sEnvironment = getEnvironment().toLowerCase();
+        String sDataSourceUrl = null;
+        switch (sEnvironment) {
+            case "local" : {
+                sDataSourceUrl = getLocalDataSourceUrl();
+                break;
+            }
+            case "test" : {
+                sDataSourceUrl = getTestDataSourceUrl();
+                break;
+            }
+            case "prod" : {
+                sDataSourceUrl = getProdDataSourceUrl();
+                break;
+            }
+            default : {
+                Assert.fail("Cannot get DataSourceUrl! Environment '" + sEnvironment + "' is not recognized!");
+            }
+        }
+        return sDataSourceUrl;
     }
 
 }

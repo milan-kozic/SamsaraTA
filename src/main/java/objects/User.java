@@ -25,7 +25,7 @@ public class User {
     private Integer heroCount;
     private List<Hero> heroes;
 
-    private User(String username, String password, String email, String firstName, String lastName, String about, String secretQuestion, String secretAnswer, Date createdAt, Integer heroCount, List<Hero> heroes) {
+    public User(String username, String password, String email, String firstName, String lastName, String about, String secretQuestion, String secretAnswer, Date createdAt, List<Hero> heroes) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -35,7 +35,7 @@ public class User {
         this.secretQuestion = secretQuestion;
         this.secretAnswer = secretAnswer;
         setCreatedAt(createdAt);
-        this.heroCount = heroCount;
+        this.heroCount = heroes.size();
         this.heroes = heroes;
     }
 
@@ -201,6 +201,10 @@ public class User {
             }
         }
         return null;
+    }
+
+    public void clearEmail() {
+        setEmail(null);
     }
 
     public static User createNewUniqueUser(String sUsername) {

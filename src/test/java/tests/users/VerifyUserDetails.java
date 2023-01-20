@@ -1,4 +1,4 @@
-package tests.login;
+package tests.users;
 
 import annotations.Jira;
 import data.CommonStrings;
@@ -12,21 +12,21 @@ import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 import pages.LoginPage;
+import pages.UserDetailsDialogBox;
+import pages.UsersPage;
 import pages.WelcomePage;
 import tests.BaseTestClass;
 import utils.DateTimeUtils;
 import utils.RestApiUtils;
 
-@Jira(jiraID = "JIRA00001")
-@Test(groups = {Groups.REGRESSION, Groups.SANITY, Groups.DEMO, Groups.LOGIN, "JIRA00001E"}, testName = "JIRA00001C", description = "JIRA00001D")
-public class SuccessfulLoginLogout extends BaseTestClass {
+@Jira(jiraID = "JIRA00003")
+@Test(groups = {Groups.REGRESSION, Groups.SANITY, Groups.DEMO, Groups.USERS})
+public class VerifyUserDetails extends BaseTestClass {
 
     private final String sTestName = this.getClass().getName();
     private WebDriver driver;
-
-    public final String sJiraID = "JIRA00001A";
-
     private User user;
     private boolean bCreated = false;
 
@@ -37,39 +37,40 @@ public class SuccessfulLoginLogout extends BaseTestClass {
 
         driver = setUpDriver();
         testContext.setAttribute(sTestName + ".drivers", new WebDriver[]{driver});
-        testContext.setAttribute(sTestName + ".jiraID", "JIRA00001B");
 
-        user = User.createNewUniqueUser("SuccessLoginLogout");
+        user = User.createNewUniqueUser("VerifyUserDetails");
         RestApiUtils.postUser(user);
         bCreated = true;
         user.setCreatedAt(RestApiUtils.getUser(user.getUsername()).getCreatedAt());
     }
 
     @Test
-    public void testSuccessfulLoginLogout() {
+    public void testVerifyUserDetails() {
 
         log.debug("[START TEST] " + sTestName);
-
-        String sExpectedLogoutSuccessMessage = CommonStrings.getLogoutSuccessMessage();
 
         LoginPage loginPage = new LoginPage(driver).open();
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
-        loginPage.typeUsername(user.getUsername());
+        WelcomePage welcomePage = loginPage.login(user);
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
-        loginPage.typePassword(user.getPassword());
+        UsersPage usersPage = welcomePage.clickUsersTab();
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
-        WelcomePage welcomePage = loginPage.clickLoginButton();
+        usersPage = usersPage.search(user.getUsername());
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
-        loginPage = welcomePage.clickLogoutLink();
+        UserDetailsDialogBox userDetailsDialogBox = usersPage.clickUserDetailsIconInUsersTable(user.getUsername());
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
-        String sActualLogoutSuccessMessage = loginPage.getSuccessMessage();
-        Assert.assertEquals(sActualLogoutSuccessMessage, sExpectedLogoutSuccessMessage, "Wrong Logout Success Message!");
-
+        SoftAssert softAssert = new SoftAssert();
+        softAssert.assertEquals(userDetailsDialogBox.getUsername(), user.getUsername(), "Username is NOT correct!");
+        softAssert.assertEquals(userDetailsDialogBox.getFirstName(), user.getFirstName(), "First Name is NOT correct!");
+        softAssert.assertEquals(userDetailsDialogBox.getLastName(), user.getLastName(), "Last Name is NOT correct!");
+        softAssert.assertEquals(userDetailsDialogBox.getAbout(), user.getAbout(), "About Text is NOT correct!");
+        softAssert.assertTrue(DateTimeUtils.compareDateTimes(userDetailsDialogBox.getCreatedAtDate(), user.getCreatedAt(), 120), "Created At Date is NOT correct!");
+        softAssert.assertAll("User Details are NOT correct!");
     }
 
     @AfterMethod(alwaysRun = true)
@@ -89,4 +90,5 @@ public class SuccessfulLoginLogout extends BaseTestClass {
             log.error("Exception occurred in cleanUp(" + sTestName + ")! Message: " + e.getMessage());
         }
     }
+
 }

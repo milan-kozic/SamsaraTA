@@ -27,7 +27,7 @@ public class Hero {
 
     private Long createdAt;
 
-    private Hero(String heroName, String heroClass, int heroLevel, String username, Date createdAt) {
+    public Hero(String heroName, String heroClass, int heroLevel, String username, Date createdAt) {
         this.setHeroName(heroName);
         this.setHeroClass(heroClass);
         this.setHeroLevel(heroLevel);

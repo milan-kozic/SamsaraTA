@@ -3,11 +3,20 @@ package pages;
 import data.PageUrlPaths;
 import data.Time;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 
 public class PracticePage extends CommonLoggedInPage {
 
     // Page Url Path
     private final String PRACTICE_PAGE_URL = getPageUrl(PageUrlPaths.PRACTICE_PAGE);
+
+    // Locators
+    @FindBy(xpath = "//div[@id='useless-tooltip']/p[contains(@class,'h4 heading')]")
+    private WebElement uselessTooltipTitle;
+
+    @FindBy(id = "useless-tooltip-text")
+    WebElement uselessTooltip;
 
     // Constructor
     public PracticePage(WebDriver driver) {

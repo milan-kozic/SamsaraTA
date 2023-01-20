@@ -30,8 +30,41 @@ public final class CommonStrings {
         return getLocaleString("REGISTER_SUCCESS_MESSAGE");
     }
 
+    // DeleteHero DialogBox
     public static String getDeleteHeroMessage(String sHeroName, String sHeroClass, Integer iHeroLevel) {
         return getLocaleString("DELETE_HERO_MESSAGE").replace("%HERO_NAME%", sHeroName).replace("%HERO_CLASS%", sHeroClass).replace("%HERO_LEVEL%", String.valueOf(iHeroLevel));
+    }
+
+    // Practice Page
+    public static String getUselessTooltipText() {
+        return getLocaleString("USELESS_TOOLTIP_TEXT");
+    }
+
+    // API Errors
+    public static String getApiErrorInternalServerError() {
+        return getLocaleString("API_ERROR_INTERNAL_SERVER_ERROR");
+    }
+    public static String getApiErrorForbidden() {
+        return getLocaleString("API_ERROR_FORBIDDEN");
+    }
+
+    // API Exceptions
+    public static String getApiExceptionIllegalArgumentException() {
+        return getLocaleString("API_EXCEPTION_ILLEGAL_ARGUMENT_EXCEPTION");
+    }
+
+    // API Messages
+    public static String getApiMessageNonExistingUser(String sUsername) {
+        return getLocaleString("API_MESSAGE_NON_EXISTING_USER").replace("%USERNAME%", sUsername);
+    }
+    public static String getApiMessageAlreadyExistingUser(String sUsername) {
+        return getLocaleString("API_MESSAGE_ALREADY_EXISTING_USER").replace("%USERNAME%", sUsername);
+    }
+    public static String getApiMessageAccessDenied() {
+        return getLocaleString("API_MESSAGE_ACCESS_DENIED");
+    }
+    public static String getApiMessageEmailNotSpecified() {
+        return getLocaleString("API_MESSAGE_EMAIL_NOT_SPECIFIED");
     }
 
 }

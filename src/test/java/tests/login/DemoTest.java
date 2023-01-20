@@ -3,17 +3,19 @@ package tests.login;
 import objects.User;
 import org.testng.annotations.Test;
 import tests.BaseTestClass;
+import utils.DateTimeUtils;
 import utils.RestApiUtils;
+
+import java.util.Date;
 
 public class DemoTest extends BaseTestClass {
 
     @Test
     public void testDemoTest() {
 
-        User user = RestApiUtils.getUser("dedoje");
-        String userJson = RestApiUtils.getUserJsonFormat("dedoje");
-        log.info(user);
-        log.info("\n" + userJson);
-
+        Date date = DateTimeUtils.getCurrentDateTime();
+        log.info(date);
+        String sLocaleDateTime = DateTimeUtils.getLocalizedDateTime(date, "EEEE, dd-MMMM-yyyy HH:mm:ss zzzz", "sl");
+        log.info(sLocaleDateTime);
     }
 }

@@ -5,6 +5,7 @@ import data.Time;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 import org.testng.Assert;
 
 import java.util.List;
@@ -17,6 +18,9 @@ public class UsersPage extends CommonLoggedInPage {
     // Locators
     private final By addNewUserButtonLocator = By.xpath("//a[contains(@class, 'btn-info') and contains(@onclick, 'openAddUserModal')]");
     private final By usersTableLocator = By.id("users-table");
+    private final By searchTextBoxLocator = By.id("search");
+    private final By searchButtonLocator = By.xpath("//form[@id='searchForm']//i[contains(@class,'glyphicon-search')]");
+
 
     // //table[@id='users-table']//tbody//td[1]/self::td[text()='dedoje']/following-sibling::td[1]
 
@@ -93,6 +97,46 @@ public class UsersPage extends CommonLoggedInPage {
         Assert.assertTrue(isAddNewUserButtonDisplayed(), "'Add New User' Button is NOT displayed on Users Page");
         WebElement addNewUserButton = getWebElement(addNewUserButtonLocator);
         return getTextFromWebElement(addNewUserButton);
+    }
+
+    public boolean isSearchTextBoxDisplayed() {
+        log.debug("isSearchTextBoxDisplayed()");
+        return isWebElementDisplayed(searchTextBoxLocator);
+    }
+
+    public UsersPage typeSearchText(String text) {
+        log.debug("typeSearchText(" + text + ")");
+        Assert.assertTrue(isSearchTextBoxDisplayed(), "'Search' Text Box is NOT displayed on Users Page");
+        WebElement searchTextBox = getWebElement(searchTextBoxLocator);
+        clearAndTypeTextToWebElement(searchTextBox, text);
+        return this;
+    }
+
+    public String getSearchText() {
+        log.debug("getSearchText()");
+        Assert.assertTrue(isSearchTextBoxDisplayed(), "'Search' Text Box is NOT displayed on Users Page");
+        WebElement searchTextBox = getWebElement(searchTextBoxLocator);
+        return getValueFromWebElement(searchTextBox);
+    }
+
+    public boolean isSearchButtonDisplayed() {
+        log.debug("isSearchButtonDisplayed()");
+        return isWebElementDisplayed(searchButtonLocator);
+    }
+
+    public UsersPage clickSearchButton() {
+        log.debug("clickSearchButton()");
+        Assert.assertTrue(isSearchButtonDisplayed(), "'Search' Button is NOT displayed on Heroes Page");
+        WebElement searchButton = getWebElement(searchButtonLocator);
+        clickOnWebElement(searchButton);
+        UsersPage usersPage = new UsersPage(driver);
+        return usersPage.verifyUsersPage();
+    }
+
+    public UsersPage search(String sSearchText) {
+        log.info("search(" + sSearchText + ")");
+        typeSearchText(sSearchText);
+        return clickSearchButton();
     }
 
     public int getNumberOfRowsInUsersTable() {

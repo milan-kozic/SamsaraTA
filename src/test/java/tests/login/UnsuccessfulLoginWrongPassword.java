@@ -1,5 +1,6 @@
 package tests.login;
 
+import annotations.Jira;
 import data.CommonStrings;
 import data.Groups;
 import data.Time;
@@ -15,6 +16,7 @@ import tests.BaseTestClass;
 import utils.DateTimeUtils;
 import utils.PropertiesUtils;
 
+@Jira(jiraID = "JIRA00002")
 @Test(groups = {Groups.REGRESSION, Groups.LOGIN})
 public class UnsuccessfulLoginWrongPassword extends BaseTestClass {
 

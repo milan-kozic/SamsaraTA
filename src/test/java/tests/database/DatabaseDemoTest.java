@@ -22,15 +22,10 @@ import utils.RestApiUtils;
 import java.util.Date;
 import java.util.List;
 
-@Jira(jiraID = "JIRA00012")
 @Test(groups = {Groups.DATABASE})
 public class DatabaseDemoTest extends BaseTestClass {
 
     private final String sTestName = this.getClass().getName();
-
-    private User newUser;
-
-    boolean bCreated = false;
 
     @BeforeMethod
     public void setUpTest(ITestContext testContext) {
@@ -59,6 +54,4 @@ public class DatabaseDemoTest extends BaseTestClass {
         log.info(user);
 
     }
-
-
 }

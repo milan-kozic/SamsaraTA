@@ -1,9 +1,10 @@
-package tests.login;
+package tests.practice;
 
 import annotations.Jira;
 import data.CommonStrings;
 import data.Groups;
 import data.Time;
+import objects.Hero;
 import objects.User;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
@@ -12,20 +13,17 @@ import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import pages.LoginPage;
-import pages.WelcomePage;
+import pages.*;
 import tests.BaseTestClass;
 import utils.DateTimeUtils;
 import utils.RestApiUtils;
 
-@Jira(jiraID = "JIRA00001")
-@Test(groups = {Groups.REGRESSION, Groups.SANITY, Groups.LOGIN, "JIRA00001E"}, testName = "JIRA00001C", description = "JIRA00001D")
-public class SuccessfulLoginLogout extends BaseTestClass {
+@Jira(jiraID = "JIRA00005")
+@Test(groups = {Groups.REGRESSION, Groups.PRACTICE, Groups.MOUSE})
+public class VerifyUselessTooltip extends BaseTestClass {
 
     private final String sTestName = this.getClass().getName();
     private WebDriver driver;
-
-    public final String sJiraID = "JIRA00001A";
 
     private User user;
     private boolean bCreated = false;
@@ -37,38 +35,33 @@ public class SuccessfulLoginLogout extends BaseTestClass {
 
         driver = setUpDriver();
         testContext.setAttribute(sTestName + ".drivers", new WebDriver[]{driver});
-        testContext.setAttribute(sTestName + ".jiraID", "JIRA00001B");
 
-        user = User.createNewUniqueUser("SuccessLoginLogout");
+        user = User.createNewUniqueUser("UselessTooltip");
         RestApiUtils.postUser(user);
         bCreated = true;
         user.setCreatedAt(RestApiUtils.getUser(user.getUsername()).getCreatedAt());
     }
 
     @Test
-    public void testSuccessfulLoginLogout() {
+    public void testVerifyUselessTooltip() {
+
+        String sExpectedUselessTooltipText = CommonStrings.getUselessTooltipText();
 
         log.debug("[START TEST] " + sTestName);
-
-        String sExpectedLogoutSuccessMessage = CommonStrings.getLogoutSuccessMessage();
 
         LoginPage loginPage = new LoginPage(driver).open();
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
-        loginPage.typeUsername(user.getUsername());
+        WelcomePage welcomePage = loginPage.login(user);
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
-        loginPage.typePassword(user.getPassword());
+        PracticePage practicePage = welcomePage.clickPracticeTab();
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
+        Assert.assertFalse(practicePage.isUselessTooltipDisplayed(), "Useless Tooltip should NOT be displayed before mouse hover!");
 
-        WelcomePage welcomePage = loginPage.clickLoginButton();
+        String sTooltipText = practicePage.getUselessTooltip();
+        Assert.assertEquals(sTooltipText, sExpectedUselessTooltipText, "Wrong Tooltip Text!");
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
-
-        loginPage = welcomePage.clickLogoutLink();
-        DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
-
-        String sActualLogoutSuccessMessage = loginPage.getSuccessMessage();
-        Assert.assertEquals(sActualLogoutSuccessMessage, sExpectedLogoutSuccessMessage, "Wrong Logout Success Message!");
 
     }
 
@@ -89,4 +82,6 @@ public class SuccessfulLoginLogout extends BaseTestClass {
             log.error("Exception occurred in cleanUp(" + sTestName + ")! Message: " + e.getMessage());
         }
     }
+
+
 }

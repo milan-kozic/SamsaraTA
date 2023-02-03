@@ -39,6 +39,9 @@ public final class CommonStrings {
     public static String getUselessTooltipText() {
         return getLocaleString("USELESS_TOOLTIP_TEXT");
     }
+    public static String getDragAndDropMessage() {
+        return getLocaleString("DRAG_AND_DROP_MESSAGE");
+    }
 
     // API Errors
     public static String getApiErrorInternalServerError() {

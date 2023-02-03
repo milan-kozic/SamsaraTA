@@ -1,6 +1,6 @@
 package tests.heroes;
 
-import data.CommonStrings;
+import annotations.Jira;
 import data.Groups;
 import data.Time;
 import objects.Hero;
@@ -23,6 +23,7 @@ import utils.RestApiUtils;
 
 import java.util.Date;
 
+@Jira(jiraID = "JIRA00009")
 @Test(groups = {Groups.REGRESSION, Groups.SANITY, Groups.HEROES})
 public class AddNewHero extends BaseTestClass {
 

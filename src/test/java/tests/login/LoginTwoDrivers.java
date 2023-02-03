@@ -16,7 +16,7 @@ import tests.BaseTestClass;
 import utils.DateTimeUtils;
 import utils.PropertiesUtils;
 
-@Test(groups = {Groups.REGRESSION, Groups.LOGIN})
+@Test(groups = {Groups.REGRESSION, Groups.DEPRECATED})
 public class LoginTwoDrivers extends BaseTestClass {
 
     private final String sTestName = this.getClass().getName();

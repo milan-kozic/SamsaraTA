@@ -1,5 +1,6 @@
 package tests.heroes;
 
+import annotations.Jira;
 import data.CommonStrings;
 import data.Groups;
 import data.Time;
@@ -20,6 +21,7 @@ import utils.RestApiUtils;
 
 import java.util.Date;
 
+@Jira(jiraID = "JIRA00010")
 @Test(groups = {Groups.REGRESSION, Groups.SANITY, Groups.HEROES})
 public class DeleteHero extends BaseTestClass {
 
@@ -51,7 +53,7 @@ public class DeleteHero extends BaseTestClass {
     }
 
     @Test
-    public void testAddNewHero() {
+    public void testDeleteHero() {
 
         String sExpectedDeleteHeroMessage = CommonStrings.getDeleteHeroMessage(hero.getHeroName(), hero.getHeroClass(), hero.getHeroLevel());
         log.info("Expected Delete Hero Message: " + sExpectedDeleteHeroMessage);

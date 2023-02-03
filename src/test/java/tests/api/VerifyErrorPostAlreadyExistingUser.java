@@ -18,7 +18,7 @@ import utils.RestApiUtils;
 
 import java.util.Date;
 
-@Jira(jiraID = "JIRA00012")
+@Jira(jiraID = "JIRA00013")
 @Test(groups = {Groups.API, Groups.USERS})
 public class VerifyErrorPostAlreadyExistingUser extends BaseTestClass {
 

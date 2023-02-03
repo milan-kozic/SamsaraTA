@@ -23,7 +23,7 @@ import utils.RestApiUtils;
 
 import java.util.Date;
 
-@Jira(jiraID = "JIRA00010")
+@Jira(jiraID = "JIRA00011")
 @Test(groups = {Groups.API, Groups.USERS})
 public class VerifyErrorGetNonExistingUser extends BaseTestClass {
 

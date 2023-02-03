@@ -1,4 +1,4 @@
-package tests.users;
+package tests.practice;
 
 import annotations.Jira;
 import data.CommonStrings;
@@ -14,19 +14,19 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import pages.LoginPage;
-import pages.UserDetailsDialogBox;
-import pages.UsersPage;
+import pages.PracticePage;
 import pages.WelcomePage;
 import tests.BaseTestClass;
 import utils.DateTimeUtils;
 import utils.RestApiUtils;
 
-@Jira(jiraID = "JIRA00008")
-@Test(groups = {Groups.REGRESSION, Groups.SANITY, Groups.USERS})
-public class VerifyUserDetails extends BaseTestClass {
+@Jira(jiraID = "JIRA00003")
+@Test(groups = {Groups.REGRESSION, Groups.PRACTICE, Groups.MOUSE})
+public class VerifyDragAndDrop extends BaseTestClass {
 
     private final String sTestName = this.getClass().getName();
     private WebDriver driver;
+
     private User user;
     private boolean bCreated = false;
 
@@ -38,14 +38,16 @@ public class VerifyUserDetails extends BaseTestClass {
         driver = setUpDriver();
         testContext.setAttribute(sTestName + ".drivers", new WebDriver[]{driver});
 
-        user = User.createNewUniqueUser("VerifyUserDetails");
+        user = User.createNewUniqueUser("DragAndDrop");
         RestApiUtils.postUser(user);
         bCreated = true;
         user.setCreatedAt(RestApiUtils.getUser(user.getUsername()).getCreatedAt());
     }
 
     @Test
-    public void testVerifyUserDetails() {
+    public void testVerifyDragAndDrop() {
+
+        String sExpectedDragAndDropMessage = CommonStrings.getDragAndDropMessage();
 
         log.debug("[START TEST] " + sTestName);
 
@@ -55,22 +57,26 @@ public class VerifyUserDetails extends BaseTestClass {
         WelcomePage welcomePage = loginPage.login(user);
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
-        UsersPage usersPage = welcomePage.clickUsersTab();
+        PracticePage practicePage = welcomePage.clickPracticeTab();
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
-        usersPage = usersPage.search(user.getUsername());
+        SoftAssert softAssert1 = new SoftAssert();
+        softAssert1.assertTrue(practicePage.isImagePresentInDragArea(), "Draggable Image is NOT present in Drag Area before Drag & Drop action!");
+        softAssert1.assertFalse(practicePage.isImagePresentInDropArea(), "Draggable Image should NOT be present in Drop Area before Drag & Drop action!");
+        softAssert1.assertFalse(practicePage.isDragAndDropMessageDisplayed(), "Drag and Drop Message should NOT be present before Drag & Drop action!");
+        softAssert1.assertAll("Wrong content on Practice Page before Drag & Drop action");
+
+        practicePage = practicePage.dragAndDropImage();
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
-        UserDetailsDialogBox userDetailsDialogBox = usersPage.clickUserDetailsIconInUsersTable(user.getUsername());
-        DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
+        SoftAssert softAssert2 = new SoftAssert();
+        softAssert2.assertFalse(practicePage.isImagePresentInDragArea(), "Draggable Image should NOT be present in Drag Area after Drag & Drop action!");
+        softAssert2.assertTrue(practicePage.isImagePresentInDropArea(), "Draggable Image is NOT present in Drop Area after Drag & Drop action!");
+        softAssert2.assertTrue(practicePage.isDragAndDropMessageDisplayed(), "Drag and Drop Message is NOT present after Drag & Drop action!");
+        softAssert2.assertAll("Wrong content on Practice Page after Drag & Drop action");
 
-        SoftAssert softAssert = new SoftAssert();
-        softAssert.assertEquals(userDetailsDialogBox.getUsername(), user.getUsername(), "Username is NOT correct!");
-        softAssert.assertEquals(userDetailsDialogBox.getFirstName(), user.getFirstName(), "First Name is NOT correct!");
-        softAssert.assertEquals(userDetailsDialogBox.getLastName(), user.getLastName(), "Last Name is NOT correct!");
-        softAssert.assertEquals(userDetailsDialogBox.getAbout(), user.getAbout(), "About Text is NOT correct!");
-        softAssert.assertTrue(DateTimeUtils.compareDateTimes(userDetailsDialogBox.getCreatedAtDate(), user.getCreatedAt(), 120), "Created At Date is NOT correct!");
-        softAssert.assertAll("User Details are NOT correct!");
+        String sDragAndDropMessage = practicePage.getDragAndDropMessage();
+        Assert.assertEquals(sDragAndDropMessage, sExpectedDragAndDropMessage, "Wrong Drag and Drop Message");
     }
 
     @AfterMethod(alwaysRun = true)

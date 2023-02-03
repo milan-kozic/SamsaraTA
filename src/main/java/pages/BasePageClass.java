@@ -1,15 +1,14 @@
 package pages;
 
 import data.Time;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import utils.JavaScriptUtils;
 import utils.LoggerUtils;
 import utils.PropertiesUtils;
 import utils.WebDriverUtils;
@@ -22,6 +21,9 @@ public abstract class BasePageClass extends LoggerUtils {
     protected WebDriver driver;
 
     private static final String BASE_URL = PropertiesUtils.getBaseUrl();
+
+    // Locator
+    private final By bodyLocator = By.tagName("body");
 
     // Constructor
     protected BasePageClass(WebDriver driver) {
@@ -329,6 +331,37 @@ public abstract class BasePageClass extends LoggerUtils {
         WebDriverWait wait = getWebDriverWait(timeout);
         return wait.until(driver -> ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete")
         );
+    }
 
+    protected void moveMouseToWebElement(WebElement element) {
+        log.trace("moveMouseToWebElement(" + element + ")");
+        Actions action = new Actions(driver);
+        action.moveToElement(element).perform();
+    }
+
+    protected void doDragAndDrop(WebElement source, WebElement destination) {
+        log.trace("doDragAndDrop(" + source + ", " + destination + ")");
+        Actions action = new Actions(driver);
+        action.dragAndDrop(source, destination).perform();
+    }
+
+    protected void doDragAndDropJS(String sourceLocator, String destinationLocator) {
+        log.trace("doDragAndDropJS(" + sourceLocator + ", " + destinationLocator + ")");
+        JavaScriptUtils.simulateDragAndDrop(driver, sourceLocator, destinationLocator);
+    }
+
+    protected void clickOnLocation(Point location) {
+        log.trace("clickOnLocation(" + location + ")");
+        WebElement body = getWebElement(bodyLocator);
+        Actions action = new Actions(driver);
+        int xOffset = location.getX() - body.getSize().getWidth() / 2;
+        int yOffset = location.getY() - body.getSize().getHeight() / 2;
+        action.moveToElement(body, xOffset, yOffset).click().build().perform();
+    }
+
+    protected void clickOnLocationJS(Point location) {
+        log.trace("clickOnLocationJS(" + location + ")");
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("el = document.elementFromPoint("+ location.getX() + ", " + location.getY() + "); el.click();");
     }
 }

@@ -8,6 +8,7 @@ DELETE_HERO_MESSAGE=Do you really want to delete hero %HERO_NAME% (%HERO_CLASS%,
 
 # Practice Page
 USELESS_TOOLTIP_TEXT=This is one useless tooltip! Nevertheless, try to get its content!
+DRAG_AND_DROP_MESSAGE=You have successfully performed drag&drop action!
 
 # API Errors
 API_ERROR_INTERNAL_SERVER_ERROR=Internal Server Error

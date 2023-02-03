@@ -1,4 +1,4 @@
-package tests.users;
+package tests.practice;
 
 import annotations.Jira;
 import data.Groups;
@@ -10,51 +10,52 @@ import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import pages.AdminPage;
 import pages.LoginPage;
-import pages.UsersPage;
+import pages.PracticePage;
 import pages.WelcomePage;
 import tests.BaseTestClass;
 import utils.DateTimeUtils;
-import utils.PropertiesUtils;
+import utils.RestApiUtils;
 
-@Jira(jiraID = "JIRA00007")
-@Test(groups = {Groups.REGRESSION, Groups.SANITY, Groups.USERS})
-public class AddNewUser extends BaseTestClass {
+@Jira(jiraID = "JIRA00004")
+@Test(groups = {Groups.REGRESSION, Groups.PRACTICE, Groups.IMAGE, Groups.MOUSE})
+public class VerifySamsaraImage extends BaseTestClass {
 
     private final String sTestName = this.getClass().getName();
-
     private WebDriver driver;
 
-    private String sUsername;
-    private String sPassword;
-
     private User user;
+    private boolean bCreated = false;
+
 
     @BeforeMethod
     public void setUpTest(ITestContext testContext) {
         log.debug("[SETUP TEST] " + sTestName);
 
         driver = setUpDriver();
+        testContext.setAttribute(sTestName + ".drivers", new WebDriver[]{driver});
 
-        sUsername = PropertiesUtils.getAdminUsername();
-        sPassword = PropertiesUtils.getAdminPassword();
-
+        user = User.createNewUniqueUser("SamsaraImage");
+        RestApiUtils.postUser(user);
+        bCreated = true;
+        user.setCreatedAt(RestApiUtils.getUser(user.getUsername()).getCreatedAt());
     }
 
     @Test
-    public void testAddNewUser() {
+    public void testVerifySamsaraImage() {
 
         log.debug("[START TEST] " + sTestName);
 
         LoginPage loginPage = new LoginPage(driver).open();
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
-        WelcomePage welcomePage = loginPage.login(sUsername, sPassword);
+        WelcomePage welcomePage = loginPage.login(user);
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
-        UsersPage usersPage = welcomePage.clickUsersTab();
+        PracticePage practicePage = welcomePage.clickPracticeTab();
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
+
+        welcomePage = practicePage.clickSamsaraImage();
 
     }
 
@@ -62,6 +63,18 @@ public class AddNewUser extends BaseTestClass {
     public void tearDownTest(ITestResult testResult) {
         log.debug("[END TEST] " + sTestName);
         tearDown(driver, testResult);
+        if(bCreated) {
+            cleanUp();
+        }
+    }
+
+    private void cleanUp() {
+        log.debug("cleanUp()");
+        try {
+            RestApiUtils.deleteUser(user.getUsername());
+        } catch (AssertionError | Exception e) {
+            log.error("Exception occurred in cleanUp(" + sTestName + ")! Message: " + e.getMessage());
+        }
     }
 
 }

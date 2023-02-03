@@ -1,6 +1,8 @@
 package tests.register;
 
+import annotations.Jira;
 import data.CommonStrings;
+import data.Groups;
 import data.Time;
 import objects.User;
 import org.openqa.selenium.WebDriver;
@@ -19,6 +21,8 @@ import utils.RestApiUtils;
 
 import java.util.Date;
 
+@Jira(jiraID = "JIRA00006")
+@Test(groups = {Groups.REGRESSION, Groups.REGISTER})
 public class SuccessfulRegister extends BaseTestClass {
 
     private final String sTestName = this.getClass().getSimpleName();

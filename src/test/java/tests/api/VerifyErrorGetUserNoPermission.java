@@ -19,7 +19,7 @@ import utils.RestApiUtils;
 
 import java.util.Date;
 
-@Jira(jiraID = "JIRA00011")
+@Jira(jiraID = "JIRA00012")
 @Test(groups = {Groups.API, Groups.USERS})
 public class VerifyErrorGetUserNoPermission extends BaseTestClass {
 

@@ -21,7 +21,7 @@ import utils.RestApiUtils;
 
 import java.util.Date;
 
-@Jira(jiraID = "JIRA00006")
+@Jira(jiraID = "JIRA00006", owner = "Users Team")
 @Test(groups = {Groups.REGRESSION, Groups.REGISTER})
 public class SuccessfulRegister extends BaseTestClass {
 

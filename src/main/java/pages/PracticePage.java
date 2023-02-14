@@ -111,7 +111,6 @@ public class PracticePage extends CommonLoggedInPage {
 
     public PracticePage dragAndDropImage() {
         log.debug("dragAndDropImage()");
-        doDragAndDrop(draggableImage, dropArea);
         doDragAndDropJS(draggableImageLocatorString, dropAreaLocatorString);
         PracticePage practicePage = new PracticePage(driver);
         return practicePage.verifyPracticePage();

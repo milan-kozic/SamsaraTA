@@ -13,9 +13,7 @@ public class DemoTest extends BaseTestClass {
     @Test
     public void testDemoTest() {
 
-        Date date = DateTimeUtils.getCurrentDateTime();
-        log.info(date);
-        String sLocaleDateTime = DateTimeUtils.getLocalizedDateTime(date, "EEEE, dd-MMMM-yyyy HH:mm:ss zzzz", "sl");
-        log.info(sLocaleDateTime);
+        User newUser = User.readUserFromCSVFile("dedoje");
+        log.info(newUser);
     }
 }

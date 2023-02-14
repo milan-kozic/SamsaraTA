@@ -2,6 +2,7 @@ package objects;
 
 import com.github.javafaker.Faker;
 import org.testng.Assert;
+import utils.CSVUtils;
 import utils.DateTimeUtils;
 import utils.PropertiesUtils;
 
@@ -12,6 +13,8 @@ import java.util.Objects;
 
 // POJO - Plain Old Java Object
 public class User {
+
+    private static final String usersFilePath = System.getProperty("user.dir") + PropertiesUtils.getDocumentsFolder() + "Users.csv";
 
     private String username;
     private String password;
@@ -213,6 +216,17 @@ public class User {
             Assert.fail("Username '" + username + "' cannot be longer than 35 characters!");
         }
         return new User(username);
+    }
+
+    public static User readUserFromCSVFile(String sUsername) {
+        String sPassword = CSVUtils.getCellValueBySpecifiedRowAndSpecifiedColumn(usersFilePath, sUsername, "password");
+        String sEmail = CSVUtils.getCellValueBySpecifiedRowAndSpecifiedColumn(usersFilePath, sUsername, "email");
+        String sFirstName = CSVUtils.getCellValueBySpecifiedRowAndSpecifiedColumn(usersFilePath, sUsername, "firstName");
+        String sLastName = CSVUtils.getCellValueBySpecifiedRowAndSpecifiedColumn(usersFilePath, sUsername, "lastName");
+        String sAbout = CSVUtils.getCellValueBySpecifiedRowAndSpecifiedColumn(usersFilePath, sUsername, "about");
+        String sSecretQuestion = CSVUtils.getCellValueBySpecifiedRowAndSpecifiedColumn(usersFilePath, sUsername, "secretQuestion");
+        String sSecretAnswer = CSVUtils.getCellValueBySpecifiedRowAndSpecifiedColumn(usersFilePath, sUsername, "secretAnswer");
+        return new User(sUsername, sPassword, sEmail, sFirstName, sLastName, sAbout, sSecretQuestion, sSecretAnswer);
     }
 
     @Override

@@ -21,7 +21,7 @@ import tests.BaseTestClass;
 import utils.DateTimeUtils;
 import utils.RestApiUtils;
 
-@Jira(jiraID = "JIRA00008")
+@Jira(jiraID = "JIRA00008", owner = "Users Team")
 @Test(groups = {Groups.REGRESSION, Groups.SANITY, Groups.USERS})
 public class VerifyUserDetails extends BaseTestClass {
 

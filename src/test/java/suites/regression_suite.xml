@@ -1,5 +1,9 @@
 <!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
 <suite  name="Regression Suite" parallel="methods" thread-count="4">
+    <parameter name="updateJira" value="true"/>
+    <listeners>
+        <listener class-name="listeners.TestListener"/>
+    </listeners>
     <test name="Regression Tests">
         <groups>
             <run>

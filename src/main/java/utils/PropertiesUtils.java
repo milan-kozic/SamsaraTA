@@ -82,8 +82,16 @@ public class PropertiesUtils extends LoggerUtils {
         return getProperty("screenshotsFolder");
     }
 
+    public static String getReportsFolder() {
+        return getProperty("reportsFolder");
+    }
+
     public static String getImagesFolder() {
         return getProperty("imagesFolder");
+    }
+
+    public static String getDocumentsFolder() {
+        return getProperty("documentsFolder");
     }
 
     public static String getLocalBaseUrl() {

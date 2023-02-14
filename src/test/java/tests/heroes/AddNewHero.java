@@ -23,7 +23,7 @@ import utils.RestApiUtils;
 
 import java.util.Date;
 
-@Jira(jiraID = "JIRA00009")
+@Jira(jiraID = "JIRA00009", owner = "Heroes Team")
 @Test(groups = {Groups.REGRESSION, Groups.SANITY, Groups.HEROES})
 public class AddNewHero extends BaseTestClass {
 

@@ -21,7 +21,7 @@ import utils.RestApiUtils;
 
 import java.util.Date;
 
-@Jira(jiraID = "JIRA00010")
+@Jira(jiraID = "JIRA00010", owner = "Heroes Team")
 @Test(groups = {Groups.REGRESSION, Groups.SANITY, Groups.HEROES})
 public class DeleteHero extends BaseTestClass {
 

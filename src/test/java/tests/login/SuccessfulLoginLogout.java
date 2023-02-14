@@ -19,7 +19,7 @@ import utils.DateTimeUtils;
 import utils.RestApiUtils;
 
 @Jira(jiraID = "JIRA00001")
-@Test(groups = {Groups.REGRESSION, Groups.SANITY, Groups.LOGIN, "JIRA00001E"}, testName = "JIRA00001C", description = "JIRA00001D")
+@Test(groups = {Groups.REGRESSION, Groups.SANITY, Groups.LOGIN}, testName = "JIRA00001C", description = "JIRA00001D")
 public class SuccessfulLoginLogout extends BaseTestClass {
 
     private final String sTestName = this.getClass().getName();

@@ -10,7 +10,6 @@ import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import pages.AdminPage;
 import pages.LoginPage;
 import pages.UsersPage;
 import pages.WelcomePage;
@@ -18,7 +17,7 @@ import tests.BaseTestClass;
 import utils.DateTimeUtils;
 import utils.PropertiesUtils;
 
-@Jira(jiraID = "JIRA00007")
+@Jira(jiraID = "JIRA00007", owner = "Users Team")
 @Test(groups = {Groups.REGRESSION, Groups.SANITY, Groups.USERS})
 public class AddNewUser extends BaseTestClass {
 
@@ -36,6 +35,8 @@ public class AddNewUser extends BaseTestClass {
         log.debug("[SETUP TEST] " + sTestName);
 
         driver = setUpDriver();
+        testContext.setAttribute(sTestName + ".drivers", new WebDriver[]{driver});
+        testContext.setAttribute(sTestName + ".jiraID", "JIRA00001B");
 
         sUsername = PropertiesUtils.getAdminUsername();
         sPassword = PropertiesUtils.getAdminPassword();
@@ -55,7 +56,6 @@ public class AddNewUser extends BaseTestClass {
 
         UsersPage usersPage = welcomePage.clickUsersTab();
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
-
     }
 
     @AfterMethod(alwaysRun = true)

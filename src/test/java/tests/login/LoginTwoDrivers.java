@@ -1,8 +1,10 @@
 package tests.login;
 
+import annotations.Jira;
 import data.Groups;
 import data.Time;
 import org.openqa.selenium.WebDriver;
+import org.testng.Assert;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
@@ -16,7 +18,8 @@ import tests.BaseTestClass;
 import utils.DateTimeUtils;
 import utils.PropertiesUtils;
 
-@Test(groups = {Groups.REGRESSION, Groups.DEPRECATED})
+@Jira(jiraID = "JIRA00101")
+@Test(groups = {Groups.REGRESSION})
 public class LoginTwoDrivers extends BaseTestClass {
 
     private final String sTestName = this.getClass().getName();
@@ -67,6 +70,8 @@ public class LoginTwoDrivers extends BaseTestClass {
 
         HeroesPage heroesPage2 = welcomePage2.clickHeroesTab();
         DateTimeUtils.wait(Time.TIME_SHORT);
+
+        Assert.fail("Test Failed!");
 
     }
 

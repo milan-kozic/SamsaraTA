@@ -1,6 +1,10 @@
 <!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
 <suite  name="Regression Suite" parallel="methods" thread-count="4">
     <parameter name="updateJira" value="true"/>
+    <parameter name="environment" value="local"/>
+    <parameter name="browser" value="chrome"/>
+    <parameter name="remote" value="false"/>
+    <parameter name="headless" value="true"/>
     <listeners>
         <listener class-name="listeners.TestListener"/>
     </listeners>

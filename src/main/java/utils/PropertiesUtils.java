@@ -35,11 +35,19 @@ public class PropertiesUtils extends LoggerUtils {
     }
 
     public static String getBrowser() {
-        return getProperty("browser");
+        String sBrowser = System.getProperty("browser");
+        if (sBrowser == null) {
+            sBrowser = getProperty("browser");
+        }
+        return sBrowser;
     }
 
     public static String getEnvironment() {
-        return getProperty("environment");
+        String sEnvironment = System.getProperty("environment");
+        if (sEnvironment == null) {
+            sEnvironment = getProperty("environment");
+        }
+        return sEnvironment;
     }
 
     public static boolean getRemote() {

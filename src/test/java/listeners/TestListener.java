@@ -42,7 +42,10 @@ public class TestListener extends LoggerUtils implements ITestListener {
         String sSuiteName = context.getSuite().getName();
         log.info("[SUITE STARTED] " + sSuiteName);
         bUpdateJira = getUpdateJira(context);
+        setBrowserProperty(context);
+        setEnvironmentProperty(context);
         context.setAttribute("listenerTakeScreenShot", bListenerTakeScreenShot);
+        context.setAttribute("browser", context.getSuite().getParameter("browser"));
 
         sExtentReportFolder = ExtentReportUtils.getExtentReportFolder(sSuiteName);
         sExtentReportName = ExtentReportUtils.getExtentReportName(sSuiteName);
@@ -274,6 +277,26 @@ public class TestListener extends LoggerUtils implements ITestListener {
             return null;
         }
         return sExtentReportFilesFolderName + "/" + sScreenShotName;
+    }
+
+    private static void setBrowserProperty(ITestContext context) {
+        String sBrowser = System.getProperty("browser");
+        if (sBrowser==null) {
+            sBrowser = context.getSuite().getParameter("browser");
+            if (sBrowser != null) {
+                System.setProperty("browser", sBrowser);
+            }
+        }
+    }
+
+    private static void setEnvironmentProperty(ITestContext context) {
+        String sEnvironment = System.getProperty("environment");
+        if (sEnvironment==null) {
+            sEnvironment = context.getSuite().getParameter("environment");
+            if (sEnvironment != null) {
+                System.setProperty("environment", sEnvironment);
+            }
+        }
     }
 
 }

@@ -329,8 +329,7 @@ public abstract class BasePageClass extends LoggerUtils {
     protected boolean waitUntilPageIsReady(int timeout) {
         log.trace("getPageUrl(" + timeout + ")");
         WebDriverWait wait = getWebDriverWait(timeout);
-        return wait.until(driver -> ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete")
-        );
+        return wait.until(driver -> ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete"));
     }
 
     protected void moveMouseToWebElement(WebElement element) {

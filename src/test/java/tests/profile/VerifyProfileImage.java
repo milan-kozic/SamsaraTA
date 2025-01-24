@@ -15,9 +15,9 @@ import pages.LoginPage;
 import pages.ProfilePage;
 import pages.WelcomePage;
 import tests.BaseTestClass;
-import utils.DateTimeUtils;
-import utils.LoggerUtils;
-import utils.RestApiUtils;
+import utils.*;
+
+import java.awt.image.BufferedImage;
 
 @Test(groups = {Groups.REGRESSION, Groups.PROFILE})
 public class VerifyProfileImage extends BaseTestClass {
@@ -45,7 +45,7 @@ public class VerifyProfileImage extends BaseTestClass {
     public void test() {
         LoggerUtils.log.debug("[START TEST] " + sTestName);
 
-        String sProfileImageFilePath = "PlagueDoctor.jpg";
+        String sProfileImage = "PlagueDoctor.jpg";
         String sExpectedMessage = CommonStrings.getProfileImageSavedMessage();
 
         LoginPage loginPage = new LoginPage(driver).open();
@@ -58,13 +58,17 @@ public class VerifyProfileImage extends BaseTestClass {
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
         // Upload new image
-        profilePage.uploadProfileImage(sProfileImageFilePath);
+        profilePage.uploadProfileImage(sProfileImage);
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
         // Verify message
         String sActualMessage = profilePage.getProfileImageMessage();
         Assert.assertEquals(sActualMessage, sExpectedMessage, "Wrong Profile Image Message!");
-        DateTimeUtils.wait(Time.TIME_SHORTER);
+        DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
+
+        BufferedImage actualProfileImage = profilePage.getProfileImageSnapShot();
+        DateTimeUtils.wait(Time.TIME_SHORT);
+        Assert.assertTrue(ScreenShotUtils.compareSnapShotWithImage(actualProfileImage, sProfileImage, 0, 0, true), "Profile Image is NOT correct!");
     }
 
     @AfterMethod(alwaysRun = true)

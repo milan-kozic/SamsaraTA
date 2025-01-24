@@ -17,6 +17,9 @@ public class EmailConnection {
     private static final String DEFAULT_PORT = "993";
     private static final String CONNECTION_TIMEOUT = "10000";
 
+    private static final int DEFAULT_TIMEOUT = 30;
+    private static final int DEFAULT_POLLING_TIME = 5;
+
     private final String protocol;
     private final String host;
     private final String port;
@@ -205,9 +208,35 @@ public class EmailConnection {
         return messages;
     }
 
-    public EmailMessage getLastMessage(String sender, String recipient, String subjectPart, String bodyPart, Integer withinInterval) {
+    public ArrayList<EmailMessage> getMessages(String sender, String recipient, String subjectPart, String bodyPart, Integer withinInterval, int timeout, int pollInterval) {
+        LoggerUtils.log.debug("getMessages(" + sender + ", " + recipient + ", " + subjectPart + ", " + bodyPart + ", " + withinInterval + ", " + timeout + ", " + pollInterval + ")");
+        ArrayList<EmailMessage> messages = null;
+        int pollIterations = timeout / pollInterval;
+        int numberOfMessages = 0;
+        for(int i = 1; i<= pollIterations; i++) {
+            DateTimeUtils.wait(pollInterval);
+            LoggerUtils.log.debug("[MAIL] Search Poll Count: " + i + " of " + pollIterations + " attempts..." );
+            messages = getMessages(sender, recipient, subjectPart, bodyPart, withinInterval);
+            if(messages != null) {
+                numberOfMessages = messages.size();
+                break;
+            }
+        }
+
+        LoggerUtils.log.debug("[MAIL] Number of found messages: " + numberOfMessages);
+        return messages;
+    }
+
+    public EmailMessage getLastMessage(String sender, String recipient, String subjectPart, String bodyPart, Integer withinInterval, int timeout, int pollInterval) {
         LoggerUtils.log.debug("getLastMessage(" + sender + ", " + recipient + ", " + subjectPart + ", " + bodyPart + ", " + withinInterval + ")");
-        ArrayList<EmailMessage> messages = getMessages(sender, recipient, subjectPart, bodyPart, withinInterval);
+        ArrayList<EmailMessage> messages = getMessages(sender, recipient, subjectPart, bodyPart, withinInterval, timeout, pollInterval);
+        if(messages == null) {
+            Assert.fail("No messages found after trying for " + timeout + " seconds!");
+        }
         return messages.get(messages.size() - 1);
+    }
+
+    public EmailMessage getLastMessage(String recipient, String subjectPart) {
+        return getLastMessage(null, recipient, subjectPart, null, null, DEFAULT_TIMEOUT, DEFAULT_POLLING_TIME);
     }
 }

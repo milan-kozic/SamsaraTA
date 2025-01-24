@@ -80,13 +80,13 @@ public class VerifyUserRegisteredEmail extends BaseTestClass {
 
         String sRegisterSuccessMessage = loginPage.getSuccessMessage();
         Assert.assertEquals(sRegisterSuccessMessage, sExpectedRegisterSuccessMessage, "Wrong Success Message");
-        DateTimeUtils.wait(Time.TIME_SHORT);
+        //DateTimeUtils.wait(Time.TIME_SHORT);
 
         // Establish Connection
         connection = EmailConnection.createEmailConnection(sAdminGmailAccount, sAdminGmailPassword);
 
         // Get Email Message
-        EmailMessage message = connection.getLastMessage(null, sAdminGmailAccount, user.getUsername(), null, null);
+        EmailMessage message = connection.getLastMessage(sAdminGmailAccount, user.getUsername());
 
         // Verify Email Details
         SoftAssert softAssert = new SoftAssert();

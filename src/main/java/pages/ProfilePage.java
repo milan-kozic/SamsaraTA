@@ -8,11 +8,17 @@ import org.openqa.selenium.support.FindBy;
 import org.testng.Assert;
 import utils.LoggerUtils;
 import utils.PropertiesUtils;
+import utils.ScreenShotUtils;
+
+import java.awt.image.BufferedImage;
 
 public class ProfilePage extends CommonLoggedInPageClass {
 
     // Page Url Path
     private final String PROFILE_PAGE_URL = getPageUrl(PageUrlPaths.PROFILE_PAGE);
+
+    @FindBy(id = "avatar")
+    private WebElement profileImage;
 
     @FindBy(xpath = "//form[@id='apply-avatar-form']/span[@class='warning-msg']")
     private WebElement profileImageMessage;
@@ -51,6 +57,17 @@ public class ProfilePage extends CommonLoggedInPageClass {
         waitForUrlChange(PROFILE_PAGE_URL, Time.TIME_SHORTER);
         waitUntilPageIsReady(Time.TIME_SHORT);
         return this;
+    }
+
+    public boolean isProfileImageDisplayed() {
+        LoggerUtils.log.debug("isProfileImageDisplayed()");
+        return isWebElementDisplayed(profileImage);
+    }
+
+    public BufferedImage getProfileImageSnapShot() {
+        LoggerUtils.log.debug("getProfileImageSnapShot()");
+        Assert.assertTrue(isProfileImageDisplayed(), "Profile Image is NOT displayed on Profile Page!");
+        return ScreenShotUtils.takeSnapShotOfWebElement(profileImage);
     }
 
     public boolean isProfileImageFilePathTextFieldDisplayed() {

@@ -20,6 +20,8 @@ public abstract class BasePageClass {
 
     protected WebDriver driver;
 
+    private final By pageLocator = By.tagName("body");
+
     protected BasePageClass(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this);
@@ -433,6 +435,24 @@ public abstract class BasePageClass {
         LoggerUtils.log.trace("moveMouseToWebElement(" + element + ")");
         Actions action = new Actions(driver);
         action.moveToElement(element).perform();
+    }
+
+    protected void clickOnLocation(Point location) {
+        LoggerUtils.log.trace("clickOnLocation(" + location + ")");
+        Actions action = new Actions(driver);
+        action.moveToLocation(location.getX(), location.getY()).click().build().perform();
+
+//        WebElement body = getWebElement(pageLocator);
+//        int xOffset = location.getX() - body.getSize().getWidth() / 2;
+//        int yOffset = location.getY() - body.getSize().getHeight() / 2;
+//        Actions action = new Actions(driver);
+//        action.moveToElement(body, xOffset, yOffset).click().build().perform();
+    }
+
+    protected void clickOnLocationJS(Point location) {
+        LoggerUtils.log.debug("clickOnLocationJS(" + location + ")");
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("el = document.elementFromPoint(" + location.getX() + ", " + location.getY() + "); el.click();");
     }
 
     protected void doDragAndDrop(WebElement source, WebElement destination) {

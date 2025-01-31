@@ -18,7 +18,7 @@ import utils.DateTimeUtils;
 import utils.LoggerUtils;
 import utils.RestApiUtils;
 
-@Test(groups = {Groups.REGRESSION, Groups.SANITY, Groups.LOGIN})
+@Test(groups = {Groups.REGRESSION, Groups.SANITY, Groups.LOGIN, Groups.DEMO})
 public class SuccessfulLoginLogout extends BaseTestClass {
 
     private final String sTestName = this.getClass().getName();

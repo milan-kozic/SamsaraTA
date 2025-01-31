@@ -1,14 +1,14 @@
 <!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
 <!-- The set of sanity tests to execute on the system -->
 
-<suite name="Regression Suite" parallel="methods" thread-count="4">
+<suite name="Example Suite" parallel="methods" thread-count="4">
     <listeners>
         <listener class-name="listeners.TestListener"/>
     </listeners>
-    <test name="Regression Tests">
+    <test name="Demo Tests">
         <groups>
             <run>
-                <include name="regression"/>
+                <include name="demo"/>
                 <exclude name="deprecated"/>
                 <exclude name="bugs"/>
             </run>

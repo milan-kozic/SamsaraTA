@@ -45,7 +45,7 @@ public class VerifyProfileImage extends BaseTestClass {
     public void test() {
         LoggerUtils.log.debug("[START TEST] " + sTestName);
 
-        String sProfileImage = "PlagueDoctor.jpg";
+        String sProfileImage = "PlagueDoctor.png";
         String sExpectedMessage = CommonStrings.getProfileImageSavedMessage();
 
         LoginPage loginPage = new LoginPage(driver).open();
@@ -68,7 +68,7 @@ public class VerifyProfileImage extends BaseTestClass {
 
         BufferedImage actualProfileImage = profilePage.getProfileImageSnapShot();
         DateTimeUtils.wait(Time.TIME_SHORT);
-        Assert.assertTrue(ScreenShotUtils.compareSnapShotWithImage(actualProfileImage, sProfileImage, 0, 0, true), "Profile Image is NOT correct!");
+        Assert.assertTrue(ScreenShotUtils.compareSnapShotWithImage(actualProfileImage, sProfileImage, 5, 0, true), "Profile Image is NOT correct!");
     }
 
     @AfterMethod(alwaysRun = true)

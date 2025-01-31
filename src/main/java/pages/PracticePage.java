@@ -3,12 +3,14 @@ package pages;
 import data.PageUrlPaths;
 import data.Time;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.testng.Assert;
 import utils.LoggerUtils;
 import utils.PropertiesUtils;
+import utils.ScreenShotUtils;
 
 public class PracticePage extends CommonLoggedInPageClass {
 
@@ -87,6 +89,14 @@ public class PracticePage extends CommonLoggedInPageClass {
         switchToFrame(logoFrame);
         clickOnWebElement(samsaraLogo);
         switchToDefaultContent();
+        WelcomePage welcomePage = new WelcomePage(driver);
+        return welcomePage.verifyWelcomePage();
+    }
+
+    public WelcomePage clickSamsaraLogoImage() {
+        LoggerUtils.log.debug("clickSamsaraLogoImage()");
+        Point location = ScreenShotUtils.getImageCenterLocation(driver, "SamsaraLogo.png", 0, 0);
+        clickOnLocation(location);
         WelcomePage welcomePage = new WelcomePage(driver);
         return welcomePage.verifyWelcomePage();
     }

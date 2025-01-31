@@ -20,5 +20,7 @@ public final class Groups {
     public static final String USERS = "users";
     public static final String ADMIN = "admin";
 
+    public static final String DEMO = "demo";
+
     public static final String CFD = "customer_found_defect";
 }

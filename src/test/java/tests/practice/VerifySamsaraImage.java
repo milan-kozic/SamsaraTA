@@ -50,7 +50,7 @@ public class VerifySamsaraImage extends BaseTestClass {
         PracticePage practicePage = welcomePage.clickPracticeTab();
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
 
-        welcomePage = practicePage.clickSamsaraLogo();
+        welcomePage = practicePage.clickSamsaraLogoImage();
         DateTimeUtils.wait(Time.TIME_DEMONSTRATION);
     }
 

@@ -175,16 +175,49 @@ public class ScreenShotUtils {
             LoggerUtils.log.info("Difference Image: " + pathToDifferenceImage);
         }
         return bEqual;
-
     }
 
-    private static boolean compareImages(BufferedImage imageA, BufferedImage imageB) {
+    public static Point getImageCenterLocation(WebDriver driver, String imageFile, int threshold, int pixelDiff) {
+        LoggerUtils.log.trace("getImageCenterLocation(" + imageFile + ")");
+
+        BufferedImage fullImage = takeScreenShot(driver);
+        BufferedImage subImage = loadBufferedImage(imageFile);
+        Point location = findSubImage(fullImage, subImage, threshold, pixelDiff);
+        Assert.assertNotNull(location, "Image '" + imageFile + "' is NOT present on screen!");
+        int xOffset = subImage.getWidth() / 2;
+        int yOffset = subImage.getHeight() / 2;
+        return new Point (location.getX() + xOffset, location.getY() + yOffset);
+    }
+
+    private static Point findSubImage(BufferedImage fullImage, BufferedImage subImage, int threshold, int pixelDiff) {
+        int w1 = fullImage.getWidth();
+        int h1 = fullImage.getHeight();
+        int w2 = subImage.getWidth();
+        int h2 = subImage.getHeight();
+
+        if (w2 > w1 || h2 > h1) {
+            return null;
+        }
+
+        for(int x = 0; x < w1 - w2; x++) {
+            for (int y = 0; y < h1 - h2; y++) {
+                BufferedImage tempSubImage = fullImage.getSubimage(x, y, w2, h2);
+                if (compareImages(tempSubImage, subImage, threshold, pixelDiff)) {
+                   return new Point(x, y);
+                }
+            }
+        }
+        return null;
+    }
+
+    private static boolean compareImages(BufferedImage imageA, BufferedImage imageB, int threshold, int pixelDif) {
         if(imageA.getWidth() != imageB.getWidth() || imageA.getHeight() != imageB.getHeight()) {
             return false;
         }
         int width = imageA.getWidth();
         int height = imageA.getHeight();
-
+        boolean bDiffPixel;
+        int iNumberOfDiffPixels = 0;
         // ARGB
         // A = 8bits = alpha (00000000 - completely transparent, 11111111 - not transparent at all)
         // R = Red shade (0...255 values)
@@ -192,8 +225,16 @@ public class ScreenShotUtils {
         // B = Blue shade (0...255 values)
         for(int y = 0; y < height; y++) {
             for(int x = 0; x < width; x++) {
-                if (imageA.getRGB(x, y) != imageB.getRGB(x, y)) {
-                    return false;
+                if(threshold == 0) {
+                    bDiffPixel =  imageA.getRGB(x, y) != imageB.getRGB(x, y);
+                } else {
+                    bDiffPixel = 100 * compareARGB(imageA.getRGB(x, y), imageB.getRGB(x, y)) > threshold;
+                }
+                if(bDiffPixel) {
+                    iNumberOfDiffPixels++;
+                    if(iNumberOfDiffPixels > pixelDif) {
+                        return false;
+                    }
                 }
             }
         }
@@ -213,8 +254,6 @@ public class ScreenShotUtils {
         double a1 = ((rgb1 >> 24) & 0xFF) / 255.0;
         double a2 = ((rgb2 >> 24) & 0xFF) / 255.0;
 
-        // TODO: Create comparison algorithm
-        double result = 0;
-        return result;
+        return a1 * a2 * Math.sqrt((r1-r2)*(r1-r2) + (g1-g2)*(g1-g2) + (b1-b2)*(b1-b2)) / Math.sqrt(3);
     }
 }

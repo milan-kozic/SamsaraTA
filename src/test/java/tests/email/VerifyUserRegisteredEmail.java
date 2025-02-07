@@ -1,5 +1,6 @@
 package tests.email;
 
+import annotations.Jira;
 import data.CommonStrings;
 import data.Groups;
 import data.Time;
@@ -18,6 +19,7 @@ import pages.RegisterPage;
 import tests.BaseTestClass;
 import utils.*;
 
+@Jira(jiraID = "JIRA0004")
 @Test(groups = {Groups.REGRESSION, Groups.REGISTER, Groups.USERS, Groups.EMAIL})
 public class VerifyUserRegisteredEmail extends BaseTestClass {
 
@@ -36,7 +38,9 @@ public class VerifyUserRegisteredEmail extends BaseTestClass {
     @BeforeMethod
     public void setUpTest(ITestContext testContext) {
         LoggerUtils.log.debug("[SETUP TEST] " + sTestName);
+
         driver = setUpDriver();
+        testContext.setAttribute(sTestName + ".drivers", new WebDriver[]{driver});
 
         sAdminGmailAccount = PropertiesUtils.getAdminGmailAccount();
         sAdminGmailPassword = PropertiesUtils.getAdminGmailPassword();

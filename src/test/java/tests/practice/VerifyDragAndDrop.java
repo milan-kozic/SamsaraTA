@@ -1,5 +1,6 @@
 package tests.practice;
 
+import annotations.Jira;
 import data.Groups;
 import data.Time;
 import objects.User;
@@ -18,7 +19,7 @@ import utils.DateTimeUtils;
 import utils.LoggerUtils;
 import utils.RestApiUtils;
 
-
+@Jira(jiraID = "JIRA0005")
 @Test(groups = {Groups.REGRESSION, Groups.MOUSE})
 public class VerifyDragAndDrop extends BaseTestClass {
 
@@ -32,7 +33,9 @@ public class VerifyDragAndDrop extends BaseTestClass {
     @BeforeMethod
     public void setUpTest(ITestContext testContext) {
         LoggerUtils.log.debug("[SETUP TEST] " + sTestName);
+
         driver = setUpDriver();
+        testContext.setAttribute(sTestName + ".drivers", new WebDriver[]{driver});
 
         user = User.createNewUniqueUser("DragAndDrop");
         RestApiUtils.postUser(user);

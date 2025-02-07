@@ -1,5 +1,6 @@
 package tests.users;
 
+import annotations.Jira;
 import data.Groups;
 import data.Time;
 import objects.User;
@@ -19,6 +20,7 @@ import utils.DateTimeUtils;
 import utils.LoggerUtils;
 import utils.RestApiUtils;
 
+@Jira(jiraID = "JIRA0010")
 @Test(groups = {Groups.REGRESSION, Groups.SANITY, Groups.USERS})
 public class VerifyNewUserDetails extends BaseTestClass {
 
@@ -32,7 +34,9 @@ public class VerifyNewUserDetails extends BaseTestClass {
     @BeforeMethod
     public void setUpTest(ITestContext testContext) {
         LoggerUtils.log.debug("[SETUP TEST] " + sTestName);
+
         driver = setUpDriver();
+        testContext.setAttribute(sTestName + ".drivers", new WebDriver[]{driver});
 
         user = User.createNewUniqueUser("NewUserDetails");
         RestApiUtils.postUser(user);

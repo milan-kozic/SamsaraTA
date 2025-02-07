@@ -1,5 +1,6 @@
 package tests.login;
 
+import annotations.Jira;
 import data.CommonStrings;
 import data.Groups;
 import data.Time;
@@ -18,6 +19,8 @@ import utils.DateTimeUtils;
 import utils.LoggerUtils;
 import utils.RestApiUtils;
 
+
+@Jira(jiraID = "JIRA0001")
 @Test(groups = {Groups.REGRESSION, Groups.SANITY, Groups.LOGIN, Groups.DEMO})
 public class SuccessfulLoginLogout extends BaseTestClass {
 
@@ -31,7 +34,9 @@ public class SuccessfulLoginLogout extends BaseTestClass {
     @BeforeMethod
     public void setUpTest(ITestContext testContext) {
         LoggerUtils.log.debug("[SETUP TEST] " + sTestName);
+
         driver = setUpDriver();
+        testContext.setAttribute(sTestName + ".drivers", new WebDriver[]{driver});
 
         user = User.createNewUniqueUser("SuccessfulLogin");
         RestApiUtils.postUser(user);
@@ -44,7 +49,6 @@ public class SuccessfulLoginLogout extends BaseTestClass {
     public void test() {
         LoggerUtils.log.debug("[START TEST] " + sTestName);
 
-        // Verify login with newly created user
         String sExpectedWelcomePageTitle = CommonStrings.getWelcomePageTitle();
 
         LoginPage loginPage = new LoginPage(driver).open();

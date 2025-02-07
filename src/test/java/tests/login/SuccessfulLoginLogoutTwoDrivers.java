@@ -39,7 +39,7 @@ public class SuccessfulLoginLogoutTwoDrivers extends BaseTestClass {
         LoggerUtils.log.debug("[SETUP TEST] " + sTestName);
         driver1 = setUpDriver();
         driver2 = setUpDriver();
-
+        testContext.setAttribute(sTestName + ".drivers", new WebDriver[]{driver1, driver2});
         adminUsername = PropertiesUtils.getAdminUsername();
         adminPassword = PropertiesUtils.getAdminPassword();
 
@@ -71,8 +71,6 @@ public class SuccessfulLoginLogoutTwoDrivers extends BaseTestClass {
 
         HeroesPage heroesPage2 = welcomePage2.clickHeroesTab();
         DateTimeUtils.wait(Time.TIME_SHORT);
-
-        Assert.fail("FAILURE!");
     }
 
     @AfterMethod(alwaysRun = true)

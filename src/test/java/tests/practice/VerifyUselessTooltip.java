@@ -1,5 +1,6 @@
 package tests.practice;
 
+import annotations.Jira;
 import data.CommonStrings;
 import data.Groups;
 import data.Time;
@@ -19,6 +20,7 @@ import utils.DateTimeUtils;
 import utils.LoggerUtils;
 import utils.RestApiUtils;
 
+@Jira(jiraID = "JIRA0007")
 @Test(groups = {Groups.REGRESSION, Groups.MOUSE})
 public class VerifyUselessTooltip extends BaseTestClass {
 
@@ -32,7 +34,9 @@ public class VerifyUselessTooltip extends BaseTestClass {
     @BeforeMethod
     public void setUpTest(ITestContext testContext) {
         LoggerUtils.log.debug("[SETUP TEST] " + sTestName);
+
         driver = setUpDriver();
+        testContext.setAttribute(sTestName + ".drivers", new WebDriver[]{driver});
 
         user = User.createNewUniqueUser("UselessTooltip");
         RestApiUtils.postUser(user);

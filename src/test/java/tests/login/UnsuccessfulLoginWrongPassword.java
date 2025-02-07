@@ -1,5 +1,6 @@
 package tests.login;
 
+import annotations.Jira;
 import data.CommonStrings;
 import data.Groups;
 import data.Time;
@@ -16,6 +17,7 @@ import utils.DateTimeUtils;
 import utils.LoggerUtils;
 import utils.PropertiesUtils;
 
+@Jira(jiraID = "JIRA0002")
 @Test(groups = {Groups.REGRESSION, Groups.LOGIN})
 public class UnsuccessfulLoginWrongPassword extends BaseTestClass {
 
@@ -29,7 +31,7 @@ public class UnsuccessfulLoginWrongPassword extends BaseTestClass {
     public void setUpTest(ITestContext testContext) {
         LoggerUtils.log.debug("[SETUP TEST] " + sTestName);
         driver = setUpDriver();
-
+        testContext.setAttribute(sTestName + ".drivers", new WebDriver[]{driver});
         sUsername = PropertiesUtils.getAdminUsername();
         sPassword = "wrong_password";
     }

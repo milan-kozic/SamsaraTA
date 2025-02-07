@@ -2,6 +2,8 @@
 <!-- The set of sanity tests to execute on the system -->
 
 <suite name="Example Suite" parallel="methods" thread-count="4">
+    <parameter name="takeScreenShot" value="true"/>
+    <parameter name="updateJira" value="true"/>
     <listeners>
         <listener class-name="listeners.TestListener"/>
     </listeners>

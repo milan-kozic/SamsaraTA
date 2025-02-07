@@ -1,5 +1,7 @@
 package tests.practice;
 
+import annotations.Jira;
+import data.Groups;
 import data.Time;
 import objects.User;
 import org.openqa.selenium.WebDriver;
@@ -16,6 +18,8 @@ import utils.DateTimeUtils;
 import utils.LoggerUtils;
 import utils.RestApiUtils;
 
+@Jira(jiraID = "JIRA0006")
+@Test(groups = {Groups.REGRESSION, Groups.MOUSE, Groups.IMAGE})
 public class VerifySamsaraImage extends BaseTestClass {
 
     private final String sTestName = this.getClass().getName();
@@ -28,7 +32,9 @@ public class VerifySamsaraImage extends BaseTestClass {
     @BeforeMethod
     public void setUpTest(ITestContext testContext) {
         LoggerUtils.log.debug("[SETUP TEST] " + sTestName);
+
         driver = setUpDriver();
+        testContext.setAttribute(sTestName + ".drivers", new WebDriver[]{driver});
 
         user = User.createNewUniqueUser("SamsaraImage");
         RestApiUtils.postUser(user);

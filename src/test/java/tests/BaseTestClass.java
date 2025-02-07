@@ -31,7 +31,8 @@ public abstract class BaseTestClass {
         String sTestName = testResult.getTestClass().getName();
         String sFileName = sTestName + "_" + DateTimeUtils.getDateTimeStamp();
         try {
-            if(testResult.getStatus() == ITestResult.FAILURE && PropertiesUtils.getTakeScreenshots()) {
+            testResult.getTestContext().removeAttribute(sTestName + ".driver");
+            if(testResult.getStatus() == ITestResult.FAILURE && PropertiesUtils.getTakeScreenshots() && !getListenerTakeScreenShot(testResult)) {
                 ScreenShotUtils.takeScreenShot(driver, sFileName);
             }
         } catch (AssertionError | Exception e) {
@@ -61,7 +62,7 @@ public abstract class BaseTestClass {
         String sFileName = sTestName + "_" + DateTimeUtils.getDateTimeStamp();
         for(int i = 0; i < drivers.length; i++) {
             try {
-                if(testResult.getStatus() == ITestResult.FAILURE && PropertiesUtils.getTakeScreenshots()) {
+                if(testResult.getStatus() == ITestResult.FAILURE && PropertiesUtils.getTakeScreenshots() && !getListenerTakeScreenShot(testResult)) {
                     ScreenShotUtils.takeScreenShot(drivers[i], sFileName + "_" + (i+1));
                 }
             } catch (AssertionError | Exception e) {
@@ -69,6 +70,14 @@ public abstract class BaseTestClass {
             } finally {
                 quitDriver(drivers[i]);
             }
+        }
+    }
+
+    private boolean getListenerTakeScreenShot(ITestResult result) {
+        try {
+            return (boolean) result.getTestContext().getAttribute("listenerTakeScreenShot");
+        } catch (Exception e) {
+            return false;
         }
     }
 }

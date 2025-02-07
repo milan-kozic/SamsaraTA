@@ -1,5 +1,6 @@
 package tests.admin;
 
+import annotations.Jira;
 import data.Groups;
 import data.Time;
 import org.openqa.selenium.WebDriver;
@@ -14,6 +15,7 @@ import pages.WelcomePage;
 import tests.BaseTestClass;
 import utils.*;
 
+@Jira(jiraID = "JIRA0003")
 @Test(groups = {Groups.REGRESSION, Groups.ADMIN})
 public class VerifyUserDetailsFile extends BaseTestClass {
 
@@ -30,7 +32,9 @@ public class VerifyUserDetailsFile extends BaseTestClass {
     @BeforeMethod
     public void setUpTest(ITestContext testContext) {
         LoggerUtils.log.debug("[SETUP TEST] " + sTestName);
+
         driver = setUpDriver();
+        testContext.setAttribute(sTestName + ".drivers", new WebDriver[]{driver});
 
         sAdminUsername = PropertiesUtils.getAdminUsername();
         sAdminPassword = PropertiesUtils.getAdminPassword();

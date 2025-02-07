@@ -1,5 +1,6 @@
 package tests.register;
 
+import annotations.Jira;
 import data.CommonStrings;
 import data.Groups;
 import data.Time;
@@ -20,6 +21,7 @@ import utils.RestApiUtils;
 
 import java.util.Date;
 
+@Jira(jiraID = "JIRA0009")
 @Test(groups = {Groups.REGRESSION, Groups.SANITY, Groups.REGISTER})
 public class SuccessfulRegister extends BaseTestClass {
 
@@ -33,7 +35,9 @@ public class SuccessfulRegister extends BaseTestClass {
     @BeforeMethod
     public void setUpTest(ITestContext testContext) {
         LoggerUtils.log.debug("[SETUP TEST] " + sTestName);
+
         driver = setUpDriver();
+        testContext.setAttribute(sTestName + ".drivers", new WebDriver[]{driver});
 
         user = User.createNewUniqueUser("SuccessfulRegister");
         bCreated = false;

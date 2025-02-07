@@ -1,5 +1,6 @@
 package tests.profile;
 
+import annotations.Jira;
 import data.CommonStrings;
 import data.Groups;
 import data.Time;
@@ -19,7 +20,8 @@ import utils.*;
 
 import java.awt.image.BufferedImage;
 
-@Test(groups = {Groups.REGRESSION, Groups.PROFILE})
+@Jira(jiraID = "JIRA0008")
+@Test(groups = {Groups.REGRESSION, Groups.PROFILE, Groups.IMAGE})
 public class VerifyProfileImage extends BaseTestClass {
 
     private final String sTestName = this.getClass().getName();
@@ -32,7 +34,9 @@ public class VerifyProfileImage extends BaseTestClass {
     @BeforeMethod
     public void setUpTest(ITestContext testContext) {
         LoggerUtils.log.debug("[SETUP TEST] " + sTestName);
+
         driver = setUpDriver();
+        testContext.setAttribute(sTestName + ".drivers", new WebDriver[]{driver});
 
         user = User.createNewUniqueUser("ProfileImage");
         RestApiUtils.postUser(user);

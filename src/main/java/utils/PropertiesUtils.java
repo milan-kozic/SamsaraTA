@@ -36,15 +36,27 @@ public class PropertiesUtils {
     }
 
     public static String getBrowser() {
-        return getProperty("browser").toLowerCase();
+        String sBrowser = System.getProperty("browser");
+        if(sBrowser == null) {
+            sBrowser = getProperty("browser").toLowerCase();
+        }
+        return sBrowser.toLowerCase();
     }
 
     public static String getEnvironment() {
-        return getProperty("environment").toLowerCase();
+        String sEnvironment = System.getProperty("environment");
+        if (sEnvironment == null) {
+            sEnvironment = getProperty("environment");
+        }
+        return sEnvironment;
     }
 
     public static String getLocale() {
-        return getProperty("locale").toLowerCase();
+        String sLocale = System.getProperty("locale");
+        if (sLocale == null) {
+            sLocale = getProperty("locale");
+        }
+        return sLocale;
     }
 
     private static String getLocalBaseUrl() {
@@ -95,7 +107,10 @@ public class PropertiesUtils {
     }
 
     public static boolean getRemote() {
-        String sRemote = getProperty("remote");
+        String sRemote = System.getProperty("remote");
+        if (sRemote == null) {
+            sRemote = getProperty("remote");
+        }
         sRemote = sRemote.toLowerCase();
         if (!(sRemote.equals("true") || sRemote.equals("false"))) {
             Assert.fail("Cannot convert 'Remote' property value '" + sRemote + "' to boolean value!");
@@ -104,7 +119,10 @@ public class PropertiesUtils {
     }
 
     public static boolean getHeadless() {
-        String sHeadless = getProperty("headless");
+        String sHeadless = System.getProperty("headless");
+        if (sHeadless == null) {
+            sHeadless = getProperty("headless");
+        }
         sHeadless = sHeadless.toLowerCase();
         if (!(sHeadless.equals("true") || sHeadless.equals("false"))) {
             Assert.fail("Cannot convert 'Headless' property value '" + sHeadless + "' to boolean value!");
@@ -234,6 +252,10 @@ public class PropertiesUtils {
 
     public static String getDatabaseDriver() {
         return getProperty("databaseDriver");
+    }
+
+    public static String getExtentReportsFolder() {
+        return getProperty("extentReportsFolder");
     }
 
 }

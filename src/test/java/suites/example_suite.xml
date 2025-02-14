@@ -1,9 +1,13 @@
 <!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
 <!-- The set of sanity tests to execute on the system -->
 
-<suite name="Example Suite" parallel="methods" thread-count="4">
+<!-- parallel="methods"-->
+<!-- parallel="classes"-->
+<!-- parallel="tests"-->
+<suite name="Example Suite" parallel="tests" thread-count="4">
     <parameter name="takeScreenShot" value="true"/>
     <parameter name="updateJira" value="true"/>
+    <parameter name="browser" value="edge"/>
     <listeners>
         <listener class-name="listeners.TestListener"/>
     </listeners>

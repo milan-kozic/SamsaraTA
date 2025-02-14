@@ -1,13 +1,20 @@
 package listeners;
 
 import annotations.Jira;
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.MediaEntityBuilder;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.markuputils.ExtentColor;
+import com.aventstack.extentreports.markuputils.Markup;
+import com.aventstack.extentreports.markuputils.MarkupHelper;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.WebDriver;
 import org.testng.*;
-import utils.DateTimeUtils;
-import utils.LoggerUtils;
-import utils.PropertiesUtils;
-import utils.ScreenShotUtils;
+import utils.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
 public class TestListener implements ITestListener, ISuiteListener {
@@ -15,16 +22,40 @@ public class TestListener implements ITestListener, ISuiteListener {
     private static boolean bListenerTakeScreenShot = PropertiesUtils.getTakeScreenshots();
     private static boolean bUpdateJira = false;
 
+    private static String sExtentReportFolder;
+    private static String sExtentReportName;
+    private static String sExtentReportFilesFolderName;
+    private static String sExtentReportFilesFolder;
+
+    private static ExtentReports extentReport = null;
+    private static final ThreadLocal<ExtentTest> extentTest = new ThreadLocal<>();
+
     @Override
     public void onStart(ISuite suite) {
         String sSuiteName = suite.getName();
         LoggerUtils.log.info(("[SUITE STARTED] " + sSuiteName));
+
+        sExtentReportFolder = ExtentReportsUtils.getExtentReportFolder(sSuiteName);
+        sExtentReportName = ExtentReportsUtils.getExtentReportName(sSuiteName);
+        sExtentReportFilesFolderName = ExtentReportsUtils.getExtentReportsFilesFolderName(sSuiteName);
+        sExtentReportFilesFolder = ExtentReportsUtils.getExtentReportFilesFolder(sSuiteName);
+
+        try {
+            FileUtils.cleanDirectory(new File(sExtentReportFolder));
+        } catch (Exception e) {
+            LoggerUtils.log.warn("Extent Report Folder '" + sExtentReportFolder + "' cannot be cleaned! Message: " + e.getMessage());
+        }
+
+        extentReport = ExtentReportsUtils.createExtentReportInstance(sSuiteName);
     }
 
     @Override
     public void onFinish(ISuite suite) {
         String sSuiteName = suite.getName();
         LoggerUtils.log.info(("[SUITE FINISHED] " + sSuiteName));
+        if (extentReport != null) {
+            extentReport.flush();
+        }
     }
 
     @Override
@@ -32,11 +63,9 @@ public class TestListener implements ITestListener, ISuiteListener {
         String sTestGroupName = context.getName();
         bListenerTakeScreenShot = getTakeScreenShot(context);
         bUpdateJira = getUpdateJira(context);
+        setBrowserProperty(context);
         context.setAttribute("listenerTakeScreenShot", bListenerTakeScreenShot);
         LoggerUtils.log.info(("[TESTS STARTED] " + sTestGroupName));
-
-        // Get parameters from suite/properties/command line... etc...
-
     }
 
     @Override
@@ -65,6 +94,26 @@ public class TestListener implements ITestListener, ISuiteListener {
 
         String sTestName = result.getTestClass().getName();
         LoggerUtils.log.info(("[TEST STARTED] " + sTestName));
+
+        ExtentTest test = extentReport.createTest(sTestName);
+
+        // String sPackage = result.getTestClass().getRealClass().getPackage().getName();
+        // test.assignCategory(sPackage);
+
+        String[] groups = result.getMethod().getGroups();
+        for(String group : groups) {
+            test.assignCategory(group);
+        }
+
+        Jira jira = getJiraDetails(result);
+
+        if (jira != null) {
+            test.info("JiraID: " + jira.jiraID());
+            test.assignAuthor(jira.owner());
+        } else {
+            test.assignAuthor("Unknown");
+        }
+        extentTest.set(test);
     }
 
     @Override
@@ -91,6 +140,10 @@ public class TestListener implements ITestListener, ISuiteListener {
                 String sEnvironment = PropertiesUtils.getEnvironment();
             }
         }
+
+        String logText = createPassedTestLogText(sTestName);
+        Markup markup = MarkupHelper.createLabel(logText, ExtentColor.GREEN);
+        extentTest.get().log(Status.PASS, markup);
     }
 
     @Override
@@ -111,12 +164,28 @@ public class TestListener implements ITestListener, ISuiteListener {
                     if(drivers.length > 1) {
                         sScreenShotName = sScreenShotName + "_" + (i+1);
                     }
-                    ScreenShotUtils.takeScreenShot(drivers[i], sScreenShotName);
+                    String sRelativeScreenshotPath = takeAndCopyScreenshot(drivers[i], sScreenShotName);
+
+                    String sSession = "";
+                    if (drivers.length > 1) {
+                        sSession = " (Session " + (i + 1) + ")";
+                    }
+                    if (sRelativeScreenshotPath != null) {
+                        extentTest.get().fail("Screenshot of failure" + sSession + " (click on thumbnail to enlarge)", MediaEntityBuilder.createScreenCaptureFromPath(sRelativeScreenshotPath).build());
+                    } else {
+                        extentTest.get().fail("Screenshot of failure" + sSession + " could NOT be captured!");
+                    }
+
                 }
             } else {
                 LoggerUtils.log.warn("Driver instance(s) for test '" + sTestName + "' is already null!");
+                extentTest.get().fail("Screenshot of failure could NOT be captured!");
             }
         }
+
+        String logText = createFailedTestLogText(sTestName);
+        Markup markup = MarkupHelper.createLabel(logText, ExtentColor.RED);
+        extentTest.get().log(Status.FAIL, markup);
 
         if(bUpdateJira) {
             Jira jira = getJiraDetails(result);
@@ -149,8 +218,9 @@ public class TestListener implements ITestListener, ISuiteListener {
         String sTestName = result.getTestClass().getName();
         LoggerUtils.log.info(("[TEST SKIPPED" + sTestName));
 
-        // Add info to report
-        // Create SKIP result in Test Management Tool (Jira) - add info about environment, browser, etc...
+        String logText = createSkippedTestLogText(sTestName);
+        Markup markup = MarkupHelper.createLabel(logText, ExtentColor.ORANGE);
+        extentTest.get().log(Status.SKIP, markup);
 
         if(bUpdateJira) {
             Jira jira = getJiraDetails(result);
@@ -231,6 +301,27 @@ public class TestListener implements ITestListener, ISuiteListener {
         return result.getTestClass().getRealClass().getAnnotation(Jira.class);
     }
 
+    private static String getBrowser(ITestContext context) {
+        String sSuiteName = context.getSuite().getName();
+        String sBrowser = context.getSuite().getParameter("browser");
+        if(sBrowser == null) {
+            LoggerUtils.log.warn("Parameter 'browser' is not set in '" + sSuiteName + "' suite!");
+        }
+        return sBrowser;
+    }
+
+    private static String getEnvironment(ITestContext context) {
+
+        String sSuiteName = context.getSuite().getName();
+        String sEnvironment = context.getSuite().getParameter("environment");
+        //String sEnvironment = context.getCurrentXmlTest().getParameter("environment");
+        if (sEnvironment == null) {
+            LoggerUtils.log.warn("Parameter 'environment' is not set in '" + sSuiteName + "' suite!");
+
+        }
+        return sEnvironment;
+    }
+
     private static boolean getTakeScreenShot(ITestContext context) {
         String sSuiteName = context.getSuite().getName();
 
@@ -269,5 +360,68 @@ public class TestListener implements ITestListener, ISuiteListener {
 
     private static String getTestDescription(ITestResult result) {
         return result.getMethod().getDescription();
+    }
+
+    private static void setBrowserProperty(ITestContext context) {
+        String sBrowser = System.getProperty("browser");
+        if(sBrowser == null) {
+            sBrowser = getBrowser(context);
+        }
+        if(sBrowser != null) {
+            System.setProperty("browser", sBrowser);
+        }
+    }
+
+    private static void setEnvironmentProperty(ITestContext context) {
+        String sEnvironment = System.getProperty("environment");
+        if (sEnvironment == null) {
+            sEnvironment = getEnvironment(context);
+            if (sEnvironment != null) {
+                System.setProperty("environment", sEnvironment);
+            }
+
+        }
+    }
+
+    private static String createPassedTestLogText(String sTestName) {
+        return "<b>Test " + sTestName + " Passed</b>";
+    }
+
+    private static String createSkippedTestLogText(String sTestName) {
+        return "<b>Test " + sTestName + " Skipped</b>";
+    }
+
+    private static String createFailedTestLogText(String sTestName) {
+        return "<b>Test " + sTestName + " Failed</b>";
+    }
+
+    private static String createFailedTestErrorLog(ITestResult result) {
+        StackTraceElement[] stackTraceElements = result.getThrowable().getStackTrace();
+        //String sExceptionStackTrace = Arrays.toString(result.getThrowable().getStackTrace());
+        StringBuilder sExceptionStackTrace = new StringBuilder();
+        for(StackTraceElement st : stackTraceElements) {
+            sExceptionStackTrace.append(st.toString()).append("<br>");
+        }
+        String sExceptionMessage = result.getThrowable().getMessage();
+        //sExceptionStackTrace = sExceptionStackTrace.replaceAll(",", "<br>");
+        return "<font color=red><b>" + sExceptionMessage + "</b><details><summary>" + "\nClick to see details" + "</font></summary>" + sExceptionStackTrace + "</details> \n";
+    }
+
+    private static String takeAndCopyScreenshot(WebDriver driver, String sTestName) {
+        String sSourcePath = ScreenShotUtils.takeScreenShot(driver, sTestName);
+        if (sSourcePath == null) {
+            return null;
+        }
+        File srcScreenShot = new File(sSourcePath);
+        String sScreenshotName = srcScreenShot.getName();
+        String sDestinationPath = sExtentReportFilesFolder + sScreenshotName;
+        File dstScreenShot = new File(sDestinationPath);
+        try {
+            FileUtils.copyFile(srcScreenShot, dstScreenShot);
+        } catch (IOException e) {
+            LoggerUtils.log.warn("Screenshot '" + sScreenshotName + "' could not be copied in folder '" + sExtentReportFilesFolder + "'. Message: " + e.getMessage());
+            return null;
+        }
+        return sExtentReportFilesFolderName + "/" + srcScreenShot.getName();
     }
 }
